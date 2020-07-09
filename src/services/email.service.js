@@ -24,6 +24,19 @@ const sendEmail = async (to, subject, text) => {
 };
 
 /**
+ * Send Welcome email
+ * @param {string} to
+ * @param {string} token
+ * @returns {Promise}
+ */
+const sendWelcomeEmail = async (to) => {
+  const subject = 'Welcome!';
+  const text = `Dear user,
+  Thank you for joining Servit.`;
+  await sendEmail(to, subject, text);
+};
+
+/**
  * Send reset password email
  * @param {string} to
  * @param {string} token
@@ -42,5 +55,6 @@ const sendResetPasswordEmail = async (to, token) => {
 module.exports = {
   transport,
   sendEmail,
+  sendWelcomeEmail,
   sendResetPasswordEmail,
 };
