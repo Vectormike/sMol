@@ -35,14 +35,21 @@ module.exports = router;
  *              type: object
  *              required:
  *                - name
+ *                - username
  *                - email
+ *                - phoneNumber
  *                - password
  *              properties:
  *                name:
  *                  type: string
+ *                username:
+ *                  type: string
  *                email:
  *                  type: string
  *                  format: email
+ *                  description: must be unique
+ *                phoneNumber:
+ *                  type: string
  *                  description: must be unique
  *                password:
  *                  type: string
@@ -51,7 +58,9 @@ module.exports = router;
  *                  description: At least one number and one letter
  *              example:
  *                name: fake name
+ *                username: fakename
  *                email: fake@example.com
+ *                phoneNumber: 08012345678
  *                password: password1
  *      responses:
  *        "201":
@@ -93,8 +102,8 @@ module.exports = router;
  *                  type: string
  *                  format: password
  *              example:
- *                email: fake@example.com
- *                password: password1
+ *                email: test@test.com
+ *                password: tester10
  *      responses:
  *        "200":
  *          description: OK
