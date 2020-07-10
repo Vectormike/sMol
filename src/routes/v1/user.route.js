@@ -14,8 +14,7 @@ router
 router
   .route('/:userId')
   .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
-  .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
-  .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
+  .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser);
 
 module.exports = router;
 
@@ -229,26 +228,4 @@ module.exports = router;
  *        "404":
  *          $ref: '#/components/responses/NotFound'
  *
- *    delete:
- *      summary: Delete a user
- *      description: Logged in users can delete only themselves. Only admins can delete other users.
- *      tags: [Users]
- *      security:
- *        - bearerAuth: []
- *      parameters:
- *        - in: path
- *          name: id
- *          required: true
- *          schema:
- *            type: string
- *          description: User id
- *      responses:
- *        "200":
- *          description: No content
- *        "401":
- *          $ref: '#/components/responses/Unauthorized'
- *        "403":
- *          $ref: '#/components/responses/Forbidden'
- *        "404":
- *          $ref: '#/components/responses/NotFound'
  */
