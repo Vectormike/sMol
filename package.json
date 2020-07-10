@@ -17,7 +17,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check **/*.js",
-    "prettier:fix": "prettier --write **/*.js",
+    "prettier:fix": "prettier --write **/*.js"
   },
   "keywords": [
     "node",
@@ -64,7 +64,6 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
-    "coveralls": "^3.0.7",
     "eslint": "^7.0.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.4.0",
@@ -73,7 +72,6 @@
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-security": "^1.4.0",
     "faker": "^4.1.0",
-    "husky": "^4.2.3",
     "jest": "^26.0.1",
     "lint-staged": "^10.0.7",
     "node-mocks-http": "^1.8.0",
