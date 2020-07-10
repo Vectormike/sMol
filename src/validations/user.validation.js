@@ -6,6 +6,8 @@ const createUser = {
     email: Joi.string().required().email(),
     password: Joi.string().required().custom(password),
     name: Joi.string().required(),
+    username: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
     role: Joi.string().required().valid('user', 'admin'),
   }),
 };
@@ -39,16 +41,9 @@ const updateUser = {
     .min(1),
 };
 
-const deleteUser = {
-  params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
-  }),
-};
-
 module.exports = {
   createUser,
   getUsers,
   getUser,
   updateUser,
-  deleteUser,
 };
