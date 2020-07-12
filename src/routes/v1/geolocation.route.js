@@ -7,7 +7,6 @@ const router = express.Router();
 router.post('/', auth('user'), geolocationController.getUserLocationInformation);
 
 module.exports = router;
-<<<<<<< HEAD
 
 /**
  * @swagger
@@ -49,5 +48,3 @@ module.exports = router;
  *        "404":
  *          $ref: '#/components/responses/NotFound'
  */
-=======
->>>>>>> e4b681195a7a55745d6649fb2b684d9da92845ab
