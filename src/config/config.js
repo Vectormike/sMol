@@ -54,4 +54,5 @@ module.exports = {
     },
     from: envVars.EMAIL_FROM,
   },
+  rapidApi: envVars.RAPID_KEY,
 };
