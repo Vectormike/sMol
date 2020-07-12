@@ -11,8 +11,8 @@ module.exports = router;
 /**
  * @swagger
  * tags:
- *   name: Geolocation
- *   description: Find the user's location information
+ *   name: Location
+ *   description: Get user's location information
  */
 
 /**
@@ -20,8 +20,11 @@ module.exports = router;
  * path:
  *  /location:
  *    post:
- *      summary: Input ip address
+ *      summary: Get location
+ *      description: Use ip adddress to get location.
  *      tags: [Location]
+ *      security:
+ *        - bearerAuth: []
  *      requestBody:
  *        required: true
  *        content:
@@ -29,18 +32,19 @@ module.exports = router;
  *            schema:
  *              type: object
  *              required:
- *                - ip Address
+ *                - ip
  *              properties:
- *                ip Address:
+ *                ip:
  *                  type: string
  *              example:
- *                ip Address: Joe
+ *                ip:  105.112.177.110
  *      responses:
- *        "200":
- *          description: Accepted
+ *        "201":
+ *          description: Created
  *          content:
  *            application/json:
  *              schema:
- *                type: object
- *
+ *                 $ref: '#/components/schemas/IpAddress'
+ *        "404":
+ *          $ref: '#/components/responses/NotFound'
  */

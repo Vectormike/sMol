@@ -47,6 +47,12 @@ components:
         message:
           type: string
 
+    IpAddress:
+      type: object
+      properties:
+        ip:
+          type: string
+
   responses:
     DuplicateEmail:
       description: Email already taken
