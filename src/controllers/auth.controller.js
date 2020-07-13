@@ -23,12 +23,17 @@ const refreshTokens = catchAsync(async (req, res) => {
 const forgotPassword = catchAsync(async (req, res) => {
   const resetPasswordToken = await tokenService.generateResetPasswordToken(req.body.email);
   await emailService.sendResetPasswordEmail(req.body.email, resetPasswordToken);
-  res.status(httpStatus.NO_CONTENT).json({ resetPasswordToken });
+  res.json({ resetPasswordToken });
 });
 
 const resetPassword = catchAsync(async (req, res) => {
   await authService.resetPassword(req.query.token, req.body.password);
   res.status(httpStatus.NO_CONTENT).send();
+});
+
+const changePassword = catchAsync(async (req, res) => {
+  await authService.changePassword(req.user, req.body.password);
+  res.json({});
 });
 
 module.exports = {
@@ -37,4 +42,5 @@ module.exports = {
   refreshTokens,
   forgotPassword,
   resetPassword,
+  changePassword,
 };
