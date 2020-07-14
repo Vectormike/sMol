@@ -32,7 +32,7 @@ const resetPassword = catchAsync(async (req, res) => {
 });
 
 const changePassword = catchAsync(async (req, res) => {
-  await authService.changePassword(req.user, req.body.password);
+  await authService.changePassword(req.user, req.body);
   res.json({});
 });
 

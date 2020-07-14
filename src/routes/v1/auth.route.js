@@ -1,4 +1,5 @@
 const express = require('express');
+const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
 const authValidation = require('../../validations/auth.validation');
 const authController = require('../../controllers/auth.controller');
@@ -10,6 +11,7 @@ router.post('/login', validate(authValidation.login), authController.login);
 router.post('/refresh-tokens', validate(authValidation.refreshTokens), authController.refreshTokens);
 router.post('/forgot-password', validate(authValidation.forgotPassword), authController.forgotPassword);
 router.post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
+router.post('/change-password', auth('user'), authController.changePassword);
 
 module.exports = router;
 
@@ -181,8 +183,16 @@ module.exports = router;
  *              example:
  *                email: fake@example.com
  *      responses:
- *        "204":
- *          description: No content
+ *        "200":
+ *          description: Success
+ *          content:
+ *            application/json:
+ *              schema:
+ *                   type: object
+ *                   properties:
+ *                       tokens:
+ *                           $ref: '#/components/schemas/AuthTokens'
+ *
  *        "404":
  *          $ref: '#/components/responses/NotFound'
  */

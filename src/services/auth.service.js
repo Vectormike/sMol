@@ -1,8 +1,11 @@
 const httpStatus = require('http-status');
+const bcrypt = require('bcryptjs');
 const tokenService = require('./token.service');
 const userService = require('./user.service');
 const Token = require('../models/token.model');
 const ApiError = require('../utils/ApiError');
+const User = require('../models/user.model');
+const logger = require('../config/logger');
 
 /**
  * Login with username and password
@@ -57,8 +60,35 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
   }
 };
 
+/**
+ * Change password
+ * @param {string} resetPasswordToken
+ * @param {string} newPassword
+ * @returns {Promise}
+ */
+const changePassword = async (user, body) => {
+  const { _id } = user;
+  try {
+    const foundUser = await userService.getUserById(_id);
+    if (!foundUser) {
+      throw new Error('User not found');
+    }
+    const response = await bcrypt.compare(body.oldPassword, foundUser.password);
+    if (!response) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'Password does not match');
+    }
+    const hash = await bcrypt.hash(body.newPassword, 8);
+    const updated = await User.findByIdAndUpdate({ _id }, { $set: { password: hash } }, { new: true });
+    return updated;
+  } catch (error) {
+    logger.error(error);
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password update failed');
+  }
+};
+
 module.exports = {
   loginUserWithEmailAndPassword,
   refreshAuth,
   resetPassword,
+  changePassword,
 };
