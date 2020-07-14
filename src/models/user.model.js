@@ -92,6 +92,14 @@ userSchema.methods.isPasswordMatch = async function (password) {
   return bcrypt.compare(password, user.password);
 };
 
+/**
+ * Compare passwords
+ * @returns {Promise<boolean>}
+ */
+userSchema.methods.comparePasswords = async function (oldPassword, newPassword) {
+  return bcrypt.compare(oldPassword, newPassword);
+};
+
 userSchema.pre('save', async function (next) {
   const user = this;
   if (user.isModified('password')) {
@@ -100,9 +108,6 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-/**
- * @typedef User
- */
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
