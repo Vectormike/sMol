@@ -32,10 +32,12 @@ const userSchema = mongoose.Schema(
     homeAddress: {
       type: String,
       trim: true,
+      default: '',
     },
     workAddress: {
       type: String,
       trim: true,
+      default: '',
     },
     password: {
       type: String,
