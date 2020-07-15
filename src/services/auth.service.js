@@ -1,14 +1,16 @@
 const httpStatus = require('http-status');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const tokenService = require('./token.service');
 const userService = require('./user.service');
+const vendorService = require('./vendor.service');
 const Token = require('../models/token.model');
 const ApiError = require('../utils/ApiError');
 const User = require('../models/user.model');
 const logger = require('../config/logger');
 
 /**
- * Login with username and password
+ * Login with email and password
  * @param {string} email
  * @param {string} password
  * @returns {Promise<User>}
@@ -22,14 +24,28 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 };
 
 /**
- * Refresh auth tokens
+ * Login with email and password
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<User>}
+ */
+const loginVendorWithEmailAndPassword = async (email, password) => {
+  const vendor = await vendorService.getVendorByEmail(email);
+  if (!vendor || !(await vendor.isPasswordMatch(password))) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+  }
+  return vendor;
+};
+
+/**
+ * Refresh auth tokens for user
  * @param {string} refreshToken
  * @returns {Promise<Object>}
  */
 const refreshAuth = async (refreshToken) => {
   try {
     const refreshTokenDoc = await tokenService.verifyToken(refreshToken, 'refresh');
-    const user = await userService.getUserById(refreshTokenDoc.user);
+    const user = await vendorService.getVendorById(refreshTokenDoc.user);
     if (!user) {
       throw new Error();
     }
@@ -41,20 +57,63 @@ const refreshAuth = async (refreshToken) => {
 };
 
 /**
+ * Refresh auth tokens for vendor
+ * @param {string} refreshToken
+ * @returns {Promise<Object>}
+ */
+const refreshVendorAuth = async (refreshToken) => {
+  try {
+    const refreshTokenDoc = await tokenService.verifyToken(refreshToken, 'refresh');
+    const vendor = await userService.getUserById(refreshTokenDoc.vendor);
+    if (!vendor) {
+      throw new Error();
+    }
+    await refreshTokenDoc.remove();
+    return tokenService.generateAuthTokens(vendor);
+  } catch (error) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
+  }
+};
+
+/**
  * Reset password
  * @param {string} resetPasswordToken
  * @param {string} newPassword
  * @returns {Promise}
  */
-const resetPassword = async (resetPasswordToken, newPassword) => {
+const resetPassword = async (body) => {
+  const { email } = body;
+  const code = crypto.randomBytes(3).toString('hex');
+  const hash = await bcrypt.hash(code, 8);
+  const password = hash;
   try {
-    const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, 'resetPassword');
-    const user = await userService.getUserById(resetPasswordTokenDoc.user);
+    const user = await userService.updateUserPasswordByEmail(email, password);
     if (!user) {
       throw new Error();
     }
-    await Token.deleteMany({ user: user.id, type: 'resetPassword' });
-    await userService.updateUserById(user.id, { password: newPassword });
+    return { code, user };
+  } catch (error) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
+  }
+};
+
+/**
+ * Reset password
+ * @param {string} resetPasswordToken
+ * @param {string} newPassword
+ * @returns {Promise}
+ */
+const resetVendorPassword = async (body) => {
+  const { email } = body;
+  const code = crypto.randomBytes(3).toString('hex');
+  const hash = await bcrypt.hash(code, 8);
+  const password = hash;
+  try {
+    const user = await vendorService.updateVendorPasswordByEmail(email, password);
+    if (!user) {
+      throw new Error();
+    }
+    return { code, user };
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
   }
@@ -86,9 +145,39 @@ const changePassword = async (user, body) => {
   }
 };
 
+/**
+ * Change password
+ * @param {string} resetPasswordToken
+ * @param {string} newPassword
+ * @returns {Promise}
+ */
+const changeVendorPassword = async (vendor, body) => {
+  const { _id } = vendor;
+  try {
+    const foundVendor = await vendorService.getVendorById(_id);
+    if (!foundVendor) {
+      throw new Error('Vendor not found');
+    }
+    const response = await bcrypt.compare(body.oldPassword, foundVendor.password);
+    if (!response) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'Password does not match');
+    }
+    const hash = await bcrypt.hash(body.newPassword, 8);
+    const updated = await User.findByIdAndUpdate({ _id }, { $set: { password: hash } }, { new: true });
+    return updated;
+  } catch (error) {
+    logger.error(error);
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password update failed');
+  }
+};
+
 module.exports = {
   loginUserWithEmailAndPassword,
+  loginVendorWithEmailAndPassword,
   refreshAuth,
+  refreshVendorAuth,
   resetPassword,
+  resetVendorPassword,
   changePassword,
+  changeVendorPassword,
 };

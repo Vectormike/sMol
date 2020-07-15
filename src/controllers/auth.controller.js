@@ -51,7 +51,8 @@ const forgotVendorPassword = catchAsync(async (req, res) => {
 });
 
 const resetPassword = catchAsync(async (req, res) => {
-  await authService.resetPassword(req.query.token, req.body.password);
+  const { code, user } = await authService.resetPassword(req.body);
+  await emailService.sendResetPasswordEmail(code, user);
   res.status(httpStatus.NO_CONTENT).send();
 });
 

@@ -30,7 +30,6 @@ const vendorSchema = mongoose.Schema(
     address: {
       type: String,
       required: true,
-      trim: true,
     },
     password: {
       type: String,
