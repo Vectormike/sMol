@@ -39,26 +39,15 @@ const refreshVendorTokens = catchAsync(async (req, res) => {
 });
 
 const forgotPassword = catchAsync(async (req, res) => {
-  const resetPasswordToken = await tokenService.generateResetPasswordToken(req.body.email);
-  await emailService.sendResetPasswordEmail(req.body.email, resetPasswordToken);
-  res.json({ resetPasswordToken });
+  const { code, user } = await authService.resetPassword(req.body);
+  await emailService.sendResetPasswordEmail(code, user);
+  res.json({ code, user });
 });
 
 const forgotVendorPassword = catchAsync(async (req, res) => {
-  const resetPasswordToken = await tokenService.generateVendorResetPasswordToken(req.body.email);
-  // await emailService.sendResetPasswordEmail(req.body.email, resetPasswordToken);
-  res.json({ resetPasswordToken });
-});
-
-const resetPassword = catchAsync(async (req, res) => {
-  const { code, user } = await authService.resetPassword(req.body);
+  const { code, user } = await authService.resetVendorPassword(req.body);
   await emailService.sendResetPasswordEmail(code, user);
-  res.status(httpStatus.NO_CONTENT).send();
-});
-
-const resetVendorPassword = catchAsync(async (req, res) => {
-  await authService.resetVendorPassword(req.query.token, req.body.password);
-  res.status(httpStatus.NO_CONTENT).send();
+  res.json({ code, user });
 });
 
 const changePassword = catchAsync(async (req, res) => {
@@ -80,8 +69,6 @@ module.exports = {
   refreshVendorTokens,
   forgotPassword,
   forgotVendorPassword,
-  resetPassword,
-  resetVendorPassword,
   changePassword,
   changeVendorPassword,
 };

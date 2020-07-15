@@ -109,11 +109,11 @@ const resetVendorPassword = async (body) => {
   const hash = await bcrypt.hash(code, 8);
   const password = hash;
   try {
-    const user = await vendorService.updateVendorPasswordByEmail(email, password);
-    if (!user) {
+    const vendor = await vendorService.updateVendorPasswordByEmail(email, password);
+    if (!vendor) {
       throw new Error();
     }
-    return { code, user };
+    return { code, vendor };
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
   }

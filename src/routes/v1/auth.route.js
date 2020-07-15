@@ -14,8 +14,6 @@ router.post('/refresh-tokens', validate(authValidation.refreshTokens), authContr
 router.post('/vendor/refresh-tokens', validate(authValidation.refreshTokens), authController.refreshVendorTokens);
 router.post('/forgot-password', validate(authValidation.forgotPassword), authController.forgotPassword);
 router.post('/vendor/forgot-password', validate(authValidation.forgotPassword), authController.forgotVendorPassword);
-router.post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
-router.post('/vendor/reset-password', validate(authValidation.resetPassword), authController.resetVendorPassword);
 router.post('/change-password', auth('user'), authController.changePassword);
 router.post('/vendor/change-password', auth('vendor'), authController.changeVendorPassword);
 
