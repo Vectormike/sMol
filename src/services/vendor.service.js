@@ -56,4 +56,8 @@ const updateVendorById = async (vendorId, updateBody) => {
   return vendor;
 };
 
-module.exports = { createVendor, getVendorById, getVendorByEmail, updateVendorById };
+const updateVendorPasswordByEmail = async (email, password) => {
+  return Vendor.findOneAndUpdate({ email }, { $set: { password } }, { new: true });
+};
+
+module.exports = { createVendor, getVendorById, getVendorByEmail, updateVendorById, updateVendorPasswordByEmail };

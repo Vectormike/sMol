@@ -68,10 +68,15 @@ const updateUserById = async (userId, updateBody) => {
   return user;
 };
 
+const updateUserPasswordByEmail = async (email, password) => {
+  return User.findOneAndUpdate({ email }, { $set: { password } }, { new: true });
+};
+
 module.exports = {
   createUser,
   queryUsers,
   getUserById,
   getUserByEmail,
   updateUserById,
+  updateUserPasswordByEmail,
 };
