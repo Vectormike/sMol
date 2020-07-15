@@ -4,14 +4,13 @@ const { toJSON, paginate } = require('./plugins');
 const fooditSchema = mongoose.Schema(
   {
     vendorId: {
-      type: mongoose.Types.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Vendor',
       required: true,
     },
-    address: {
+    vendorType: {
       type: String,
       required: true,
-      trim: true,
     },
     ratings: {
       type: Number,
@@ -23,7 +22,7 @@ const fooditSchema = mongoose.Schema(
         name: String,
         description: String,
         price: Number,
-        type: String,
+        deliveryTime: String,
       },
     ],
   },
@@ -36,6 +35,6 @@ const fooditSchema = mongoose.Schema(
 fooditSchema.plugin(toJSON);
 fooditSchema.plugin(paginate);
 
-const Foodit = mongoose.model('User', fooditSchema);
+const Foodit = mongoose.model('Foodit', fooditSchema);
 
 module.exports = Foodit;
