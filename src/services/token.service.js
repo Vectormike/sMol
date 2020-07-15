@@ -5,6 +5,7 @@ const config = require('../config/config');
 const userService = require('./user.service');
 const { Token } = require('../models');
 const ApiError = require('../utils/ApiError');
+const vendorService = require('./vendor.service');
 
 /**
  * Generate token
@@ -58,6 +59,21 @@ const verifyToken = async (token, type) => {
 };
 
 /**
+ * Verify token and return token doc (or throw an error if it is not valid)
+ * @param {string} token
+ * @param {string} type
+ * @returns {Promise<Token>}
+ */
+const verifyVendorToken = async (token, type) => {
+  const payload = jwt.verify(token, config.jwt.secret);
+  const tokenDoc = await Token.findOne({ token, type, vendor: payload.sub, blacklisted: false });
+  if (!tokenDoc) {
+    throw new Error('Token not found');
+  }
+  return tokenDoc;
+};
+
+/**
  * Generate auth tokens
  * @param {User} user
  * @returns {Promise<Object>}
@@ -98,10 +114,28 @@ const generateResetPasswordToken = async (email) => {
   return resetPasswordToken;
 };
 
+/**
+ * Generate reset password token
+ * @param {string} email
+ * @returns {Promise<string>}
+ */
+const generateVendorResetPasswordToken = async (email) => {
+  const vendor = await vendorService.getVendorByEmail(email);
+  if (!vendor) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'No vendors found with this email');
+  }
+  const expires = moment().add(config.jwt.resetPasswordExpirationMinutes, 'minutes');
+  const resetPasswordToken = generateToken(vendor.id, expires);
+  await saveToken(resetPasswordToken, vendor.id, expires, 'resetPassword');
+  return resetPasswordToken;
+};
+
 module.exports = {
   generateToken,
   saveToken,
   verifyToken,
+  verifyVendorToken,
   generateAuthTokens,
   generateResetPasswordToken,
+  generateVendorResetPasswordToken,
 };
