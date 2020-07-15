@@ -4,7 +4,7 @@ const { toJSON, paginate } = require('./plugins');
 const homeServiceSchema = mongoose.Schema(
   {
     vendorId: {
-      type: mongoose.Types.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Vendor',
       required: true,
     },

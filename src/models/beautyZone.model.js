@@ -4,7 +4,7 @@ const { toJSON, paginate } = require('./plugins');
 const beautyZone = mongoose.Schema(
   {
     vendorId: {
-      type: mongoose.Types.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Vendor',
       required: true,
     },
