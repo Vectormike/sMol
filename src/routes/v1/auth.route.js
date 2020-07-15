@@ -7,11 +7,17 @@ const authController = require('../../controllers/auth.controller');
 const router = express.Router();
 
 router.post('/register', validate(authValidation.register), authController.register);
+router.post('/vendor/register', validate(authValidation.registerVendor), authController.registerVendor);
 router.post('/login', validate(authValidation.login), authController.login);
+router.post('/vendor/login', validate(authValidation.loginVendor), authController.loginVendor);
 router.post('/refresh-tokens', validate(authValidation.refreshTokens), authController.refreshTokens);
+router.post('/vendor/refresh-tokens', validate(authValidation.refreshTokens), authController.refreshVendorTokens);
 router.post('/forgot-password', validate(authValidation.forgotPassword), authController.forgotPassword);
+router.post('/vendor/forgot-password', validate(authValidation.forgotPassword), authController.forgotVendorPassword);
 router.post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
+router.post('/vendor/reset-password', validate(authValidation.resetPassword), authController.resetVendorPassword);
 router.post('/change-password', auth('user'), authController.changePassword);
+router.post('/vendor/change-password', auth('vendor'), authController.changeVendorPassword);
 
 module.exports = router;
 

@@ -29,7 +29,11 @@ const userSchema = mongoose.Schema(
         }
       },
     },
-    address: {
+    homeAddress: {
+      type: String,
+      trim: true,
+    },
+    workAddress: {
       type: String,
       trim: true,
     },

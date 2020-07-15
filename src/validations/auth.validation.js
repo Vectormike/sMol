@@ -11,7 +11,24 @@ const register = {
   }),
 };
 
+const registerVendor = {
+  body: Joi.object().keys({
+    name: Joi.string().required(),
+    email: Joi.string().required().email(),
+    description: Joi.string().required(),
+    address: Joi.string().required(),
+    password: Joi.string().required().custom(password),
+  }),
+};
+
 const login = {
+  body: Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required(),
+  }),
+};
+
+const loginVendor = {
   body: Joi.object().keys({
     email: Joi.string().required(),
     password: Joi.string().required(),
@@ -41,7 +58,9 @@ const resetPassword = {
 
 module.exports = {
   register,
+  registerVendor,
   login,
+  loginVendor,
   refreshTokens,
   forgotPassword,
   resetPassword,

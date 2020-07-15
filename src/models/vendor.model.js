@@ -75,6 +75,16 @@ vendorSchema.statics.isEmailTaken = async function (email, excludeUserId) {
   return !!vendor;
 };
 
+/**
+ * Check if password matches the user's password
+ * @param {string} password
+ * @returns {Promise<boolean>}
+ */
+vendorSchema.methods.isPasswordMatch = async function (password) {
+  const vendor = this;
+  return bcrypt.compare(password, vendor.password);
+};
+
 vendorSchema.pre('save', async function (next) {
   const vendor = this;
   if (vendor.isModified('password')) {
