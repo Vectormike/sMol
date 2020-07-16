@@ -12,7 +12,7 @@ const createFood = async (foodBody) => {
   return food;
 };
 const getFoods = async () => {
-  const foods = await Foodit.find();
+  const foods = await Foodit.find().populate("vendorId");
   return foods;
 };
 module.exports = {
