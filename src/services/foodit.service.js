@@ -1,8 +1,6 @@
 const httpStatus = require('http-status');
 const { Foodit } = require('../models');
 const ApiError = require('../utils/ApiError');
-const mongoose = require('mongoose');
-const { param } = require('../routes/v1/foodit.route');
 
 const getFoods = async () => {
   const foods = await Foodit.find().populate('vendorId');
@@ -28,21 +26,20 @@ const createFood = async (foodBody) => {
   return food;
 };
 
+
 /**
  * Update Food by id
  * @param {ObjectId} userId
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-// const updateFood = async (params, body) => {
-//   console.log(body);
-//   console.log(params);
-//   const food = await Foodit.findByIdAndUpdate(params.id, { ratings: body.ratings }, { new: true });
-//   console.log(food);
-//   if (!food) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'Food not updated');
-//   }
-// };
+const updateFood = async (params, body) => {
+  const { price, description, deliveryTime, ratings, name } = body;
+  const food = await Foodit.findByIdAndUpdate(params.id, { ratings, price, description, deliveryTime, name }, { new: true });
+  if (!food) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Food not updated');
+  }
+};
 
 const deleteFood = async (params) => {
   const { id } = params;
@@ -56,5 +53,6 @@ const deleteFood = async (params) => {
 module.exports = {
   createFood,
   getFoods,
+  updateFood,
   deleteFood,
 };
