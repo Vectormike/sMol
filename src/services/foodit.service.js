@@ -50,6 +50,11 @@ const updateFoodById = async (updateBody) => {
   Object.assign(updatedFood, updateBody);
   await updatedFood.save();
   return updatedFood;
+
+const getFoods = async () => {
+  const foods = await Foodit.find().populate("vendorId");
+  return foods;
+
 };
 
 module.exports = {

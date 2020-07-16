@@ -8,13 +8,7 @@ const getFoods = catchAsync(async (req, res) => {
 });
 
 const createFood = catchAsync(async (req, res) => {
-  const food = await fooditService.createFood(req.body);
-  res.status(httpStatus.CREATED).json({ food });
-});
-
-const updateFood = catchAsync(async (req, res) => {
-  console.log(req);
-  const food = await fooditService.updateFoodById(req.body);
+  const food = await fooditService.createFood({ ...req.body, vendorId: req.user._id });
   res.status(httpStatus.CREATED).json({ food });
 });
 
