@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const { Foodit } = require('../models');
 const ApiError = require('../utils/ApiError');
 const mongoose = require('mongoose');
+const { param } = require('../routes/v1/foodit.route');
 
 const getFoods = async () => {
   const foods = await Foodit.find().populate('vendorId');
@@ -33,20 +34,15 @@ const createFood = async (foodBody) => {
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-// const updateFoodById = async (updateBody) => {
-//   console.log(updateBody);
-//   const {} = updateBody;
-//   const _id = mongoose.Types.ObjectId(updateBody.fooditID);
-//   let updatedFood = await Foodit.findByIdAndUpdate(_id, { rate }, { new: true });
-
-//   if (!updatedFood) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'Food not found');
-//   }
-
-//   Object.assign(updatedFood, updateBody);
-//   await updatedFood.save();
-//   return updatedFood;
-// };
+const updateFood = async (params, body) => {
+  console.log(body);
+  console.log(params);
+  const food = await Foodit.findByIdAndUpdate(params.id, { ratings: body.ratings }, { new: true });
+  console.log(food);
+  if (!food) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Food not updated');
+  }
+};
 
 const deleteFood = async (params) => {
   const { id } = params;
@@ -60,6 +56,6 @@ const deleteFood = async (params) => {
 module.exports = {
   createFood,
   getFoods,
-  // updateFoodById,
+  updateFood,
   deleteFood,
 };
