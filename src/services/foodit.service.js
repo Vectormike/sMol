@@ -3,12 +3,8 @@ const { Foodit } = require('../models');
 const ApiError = require('../utils/ApiError');
 const mongoose = require('mongoose');
 
-/**
- * Get all Food
- * @returns {Promise<Foodits>}
- */
 const getFoods = async () => {
-  const foods = await Foodit.find();
+  const foods = await Foodit.find().populate('vendorId');
   return foods;
 };
 
@@ -37,28 +33,33 @@ const createFood = async (foodBody) => {
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-const updateFoodById = async (updateBody) => {
-  console.log(updateBody);
-  const _id = mongoose.Types.ObjectId(updateBody.fooditID);
-  const update = {};
-  let updatedFood = await Foodit.findByIdAndUpdate(_id, { rate }, { new: true });
+// const updateFoodById = async (updateBody) => {
+//   console.log(updateBody);
+//   const {} = updateBody;
+//   const _id = mongoose.Types.ObjectId(updateBody.fooditID);
+//   let updatedFood = await Foodit.findByIdAndUpdate(_id, { rate }, { new: true });
 
-  if (!updatedFood) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Food not found');
+//   if (!updatedFood) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Food not found');
+//   }
+
+//   Object.assign(updatedFood, updateBody);
+//   await updatedFood.save();
+//   return updatedFood;
+// };
+
+const deleteFood = async (params) => {
+  const { id } = params;
+  try {
+    await Foodit.findOneAndRemove(id);
+  } catch (error) {
+    return error;
   }
-
-  Object.assign(updatedFood, updateBody);
-  await updatedFood.save();
-  return updatedFood;
-
-const getFoods = async () => {
-  const foods = await Foodit.find().populate("vendorId");
-  return foods;
-
 };
 
 module.exports = {
   createFood,
   getFoods,
-  updateFoodById,
+  // updateFoodById,
+  deleteFood,
 };

@@ -12,4 +12,9 @@ const createFood = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).json({ food });
 });
 
-module.exports = { createFood, getFoods, updateFood };
+const deleteFood = catchAsync(async (req, res) => {
+  await fooditService.deleteFood(req.params);
+  res.status(httpStatus.OK).end();
+});
+
+module.exports = { createFood, getFoods, deleteFood };
