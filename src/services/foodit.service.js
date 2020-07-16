@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { Foodit } = require('../models');
 const ApiError = require('../utils/ApiError');
+const mongoose = require('mongoose');
 
 /**
  * Get all Food
@@ -36,16 +37,21 @@ const createFood = async (foodBody) => {
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-const updateFoodById = async (userId, updateBody) => {
-  const food = await getFoodById(userId);
-  if (!food) {
+const updateFoodById = async (updateBody) => {
+  console.log(updateBody);
+  const _id = mongoose.Types.ObjectId(updateBody.fooditID);
+  const update = {};
+  let updatedFood = await Foodit.findByIdAndUpdate(_id, { rate }, { new: true });
+
+  if (!updatedFood) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Food not found');
   }
 
-  Object.assign(food, updateBody);
-  await food.save();
-  return food;
+  Object.assign(updatedFood, updateBody);
+  await updatedFood.save();
+  return updatedFood;
 };
+
 module.exports = {
   createFood,
   getFoods,
