@@ -1,6 +1,6 @@
 # RESTful API Node Server for Servit
-s
-## Features
+
+## Feature
 
 - **ES9**: latest ECMAScript features
 - **NoSQL database**: [MongoDB](https://www.mongodb.com) object data modeling using [Mongoose](https://mongoosejs.com)
