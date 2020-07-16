@@ -34,15 +34,15 @@ const createFood = async (foodBody) => {
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-const updateFood = async (params, body) => {
-  console.log(body);
-  console.log(params);
-  const food = await Foodit.findByIdAndUpdate(params.id, { ratings: body.ratings }, { new: true });
-  console.log(food);
-  if (!food) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Food not updated');
-  }
-};
+// const updateFood = async (params, body) => {
+//   console.log(body);
+//   console.log(params);
+//   const food = await Foodit.findByIdAndUpdate(params.id, { ratings: body.ratings }, { new: true });
+//   console.log(food);
+//   if (!food) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Food not updated');
+//   }
+// };
 
 const deleteFood = async (params) => {
   const { id } = params;
@@ -56,6 +56,6 @@ const deleteFood = async (params) => {
 module.exports = {
   createFood,
   getFoods,
-  updateFood,
+  // updateFood,
   deleteFood,
 };
