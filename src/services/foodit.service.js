@@ -11,7 +11,11 @@ const createFood = async (foodBody) => {
   const food = await Foodit.create(foodBody);
   return food;
 };
-
+const getFoods = async () => {
+  const foods = await Foodit.find();
+  return foods;
+};
 module.exports = {
   createFood,
+  getFoods
 };
