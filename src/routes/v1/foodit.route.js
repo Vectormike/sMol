@@ -5,6 +5,7 @@ const fooditController = require('../../controllers/foodit.controller');
 
 const router = express.Router();
 
+router.get('/', auth(), fooditController.getFoods);
 router.post('/', auth('vendor'), fooditController.createFood);
 
 module.exports = router;
