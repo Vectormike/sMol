@@ -56,6 +56,5 @@ const deleteFood = async (params) => {
 module.exports = {
   createFood,
   getFoods,
-  // updateFood,
   deleteFood,
 };
