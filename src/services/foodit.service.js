@@ -8,7 +8,6 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<User>}
  */
 const createFood = async (foodBody) => {
-  console.log(foodBody)
   const food = await Foodit.create(foodBody);
   return food;
 };
