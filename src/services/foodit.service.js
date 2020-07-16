@@ -8,11 +8,12 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<User>}
  */
 const createFood = async (foodBody) => {
+  console.log(foodBody)
   const food = await Foodit.create(foodBody);
   return food;
 };
 const getFoods = async () => {
-  const foods = await Foodit.find();
+  const foods = await Foodit.find().populate("vendorId");
   return foods;
 };
 module.exports = {
