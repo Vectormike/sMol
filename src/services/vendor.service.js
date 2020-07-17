@@ -60,4 +60,10 @@ const updateVendorPasswordByEmail = async (email, password) => {
   return Vendor.findOneAndUpdate({ email }, { $set: { password } }, { new: true });
 };
 
-module.exports = { createVendor, getVendorById, getVendorByEmail, updateVendorById, updateVendorPasswordByEmail };
+module.exports = {
+  createVendor,
+  getVendorById,
+  getVendorByEmail,
+  updateVendorById,
+  updateVendorPasswordByEmail,
+};

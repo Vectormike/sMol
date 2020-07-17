@@ -13,6 +13,7 @@ const updateVendor = catchAsync(async (req, res) => {
   const user = await vendorService.updateVendorById(req.params.userId, req.body);
   res.json({ user });
 });
+
 module.exports = {
   register,
   updateVendor,

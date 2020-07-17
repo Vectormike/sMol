@@ -8,6 +8,7 @@ const homeServiceSchema = mongoose.Schema(
       ref: 'Vendor',
       required: true,
     },
+    image: { type: String },
     ratings: {
       type: Number,
       max: 5,
