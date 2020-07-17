@@ -8,11 +8,6 @@ const beautyZone = mongoose.Schema(
       ref: 'Vendor',
       required: true,
     },
-    address: {
-      type: String,
-      required: true,
-      trim: true,
-    },
     ratings: {
       type: Number,
       max: 5,
@@ -23,7 +18,6 @@ const beautyZone = mongoose.Schema(
         name: String,
         description: String,
         price: Number,
-        type: String,
       },
     ],
   },
