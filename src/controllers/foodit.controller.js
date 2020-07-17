@@ -13,7 +13,7 @@ const createFood = catchAsync(async (req, res) => {
 });
 
 const updateFood = catchAsync(async (req, res) => {
-  const food = await fooditService.updateFood(req.user, req.body);
+  const food = await fooditService.updateFood(req.params.id, req.body);
   res.status(httpStatus.CREATED).json({ food });
 });
 
