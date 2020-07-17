@@ -56,4 +56,7 @@ module.exports = {
   },
   rapidApi: envVars.RAPID_KEY,
   mapKey: envVars.MAP_KEY,
+  cloudinaryName: envVars.CLOUDINARY_CLOUD_NAME,
+  cloudinaryKey: envVars.CLOUDINARY_API_KEY,
+  cloudinarySecret: envVars.CLOUDINARY_API_SECRET,
 };
