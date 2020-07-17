@@ -4,6 +4,7 @@ const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
 const geolocationRoute = require('./geolocation.route');
 const fooditRoute = require('./foodit.route');
+const homeserviceRoute = require('./homeservice.route');
 
 const router = express.Router();
 
@@ -12,5 +13,6 @@ router.use('/users', userRoute);
 router.use('/docs', docsRoute);
 router.use('/location', geolocationRoute);
 router.use('/foodit', fooditRoute);
+router.use('/homeservice', homeserviceRoute);
 
 module.exports = router;
