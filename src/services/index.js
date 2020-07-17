@@ -5,4 +5,5 @@ module.exports.userService = require('./user.service');
 module.exports.vendorService = require('./vendor.service');
 module.exports.fooditService = require('./foodit.service');
 module.exports.homeserviceService = require('./homeservice.service');
+module.exports.beautyzoneService = require('./beautyzone.service');
 module.exports.geolocationService = require('./geolocation.service');

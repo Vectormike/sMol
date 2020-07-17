@@ -60,7 +60,7 @@ const createFood = async (foodBody) => {
 const deleteFood = async (params) => {
   const { id } = params;
   try {
-    await Foodit.findOneAndRemove(id);
+    await Foodit.findOneAndRemove(id, { useFindAndModify: false });
   } catch (error) {
     return error;
   }
