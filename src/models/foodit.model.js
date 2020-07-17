@@ -6,6 +6,7 @@ const fooditSchema = mongoose.Schema(
     vendorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Vendor',
+      required: true,
     },
     vendorType: {
       type: String,

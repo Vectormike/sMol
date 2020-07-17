@@ -26,20 +26,36 @@ const createFood = async (foodBody) => {
   return food;
 };
 
-
 /**
  * Update Food by id
  * @param {ObjectId} userId
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-const updateFood = async (params, body) => {
-  const { price, description, deliveryTime, ratings, name } = body;
-  const food = await Foodit.findByIdAndUpdate(params.id, { ratings, price, description, deliveryTime, name }, { new: true });
-  if (!food) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Food not updated');
-  }
-};
+// const updateFood = async (params, body) => {
+//   try {
+//     const { price, description, deliveryTime, ratings, name } = body;
+//     // const { id } = query;
+//     console.log(body);
+//     console.log(params);
+//     if (!name || !price || !description || !deliveryTime || !ratings) {
+//       throw new Error('Unsuccessful');
+//     }
+//     const food = await Foodit.findByIdAndUpdate(
+//       id,
+//       { ratings, price, description, deliveryTime, name },
+//       {
+//         useFindAndModify: false,
+//         new: true,
+//       }
+//     );
+//     if (!food) {
+//       throw new ApiError(httpStatus.NOT_FOUND, 'Food not updated');
+//     }
+//   } catch (error) {
+//     return error;
+//   }
+// };
 
 const deleteFood = async (params) => {
   const { id } = params;
@@ -53,6 +69,6 @@ const deleteFood = async (params) => {
 module.exports = {
   createFood,
   getFoods,
-  updateFood,
+  // updateFood,
   deleteFood,
 };
