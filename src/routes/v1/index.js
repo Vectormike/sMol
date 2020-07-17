@@ -15,7 +15,7 @@ router.use('/image', uploadRoute);
 router.use('/users', userRoute);
 router.use('/docs', docsRoute);
 router.use('/location', geolocationRoute);
-router.use('/foodit', fooditRoute);
+router.use('/foodservice', fooditRoute);
 router.use('/homeservice', homeserviceRoute);
 router.use('/beautyzone', beautyzoneRoute);
 
