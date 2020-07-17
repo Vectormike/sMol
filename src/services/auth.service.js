@@ -45,7 +45,7 @@ const loginVendorWithEmailAndPassword = async (email, password) => {
 const refreshAuth = async (refreshToken) => {
   try {
     const refreshTokenDoc = await tokenService.verifyToken(refreshToken, 'refresh');
-    const user = await vendorService.getVendorById(refreshTokenDoc.user);
+    const user = await userService.getUserById(refreshTokenDoc.vendor);
     if (!user) {
       throw new Error();
     }
@@ -64,7 +64,7 @@ const refreshAuth = async (refreshToken) => {
 const refreshVendorAuth = async (refreshToken) => {
   try {
     const refreshTokenDoc = await tokenService.verifyToken(refreshToken, 'refresh');
-    const vendor = await userService.getUserById(refreshTokenDoc.vendor);
+    const vendor = await vendorService.getVendorById(refreshTokenDoc.user);
     if (!vendor) {
       throw new Error();
     }
