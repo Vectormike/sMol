@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.route('/').get(auth(), homeserviceController.getHomeService);
 router.route('/').post(auth('vendor'), homeserviceController.createHomeService);
-// router.route('/').patch(auth('vendor'), fooditController.updateFood);
-router.route('/').delete(auth('vendor'), homeserviceController.deleteHomeService);
+router.route('/:id').patch(auth('vendor'), homeserviceController.updateHomeService);
+router.route('/:id').delete(auth('vendor'), homeserviceController.deleteHomeService);
 
 module.exports = router;
