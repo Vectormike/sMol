@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.route('/').get(auth(), beautyzoneController.getBeautyZone);
 router.route('/').post(auth('vendor'), beautyzoneController.createBeautyZone);
-// router.route('/').patch(auth('vendor'), fooditController.updateFood);
-router.route('/').delete(auth('vendor'), beautyzoneController.deleteBeautyZone);
+router.route('/:id').patch(auth('vendor'), beautyzoneController.updateBeautyZone);
+router.route('/:id').delete(auth('vendor'), beautyzoneController.deleteBeautyZone);
 
 module.exports = router;
