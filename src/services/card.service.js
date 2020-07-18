@@ -3,6 +3,11 @@ const CreditCard = require('node-creditcard');
 const { Card } = require('../models');
 const ApiError = require('../utils/ApiError');
 
+const getCard = async () => {
+  const card = await Card.find().populate('user');
+  return card;
+};
+
 const createCard = async (cardBody) => {
   try {
     const creditcard = new CreditCard(cardBody);
@@ -25,5 +30,13 @@ const createCard = async (cardBody) => {
     return error;
   }
 };
+const deleteCard = async (params) => {
+  const { id } = params;
+  try {
+    await Card.findOneAndRemove(id, { useFindAndModify: false });
+  } catch (error) {
+    return error;
+  }
+};
 
-module.exports = { createCard };
+module.exports = { getCard, createCard, deleteCard };

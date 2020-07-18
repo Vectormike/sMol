@@ -18,7 +18,7 @@ const updateBeautyZone = catchAsync(async (req, res) => {
 });
 
 const deleteBeautyZone = catchAsync(async (req, res) => {
-  await beautyzoneService.deleteBeautyZone(req.params, req.body);
+  await beautyzoneService.deleteBeautyZone(req.params);
   res.status(httpStatus.OK).end();
 });
 
