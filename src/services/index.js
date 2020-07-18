@@ -8,3 +8,4 @@ module.exports.fooditService = require('./foodit.service');
 module.exports.homeserviceService = require('./homeservice.service');
 module.exports.beautyzoneService = require('./beautyzone.service');
 module.exports.geolocationService = require('./geolocation.service');
+module.exports.cardService = require('./card.service');
