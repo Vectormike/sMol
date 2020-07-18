@@ -1,10 +1,15 @@
-/* eslint-disable arrow-parens */
 const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('cloudinary');
-// const cloudinaryStorage = require('../config/cloudinary');
+const { createCloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
+const config = require('../config/config');
 
-const storage = new CloudinaryStorage({
+cloudinary.config({
+  cloud_name: config.cloudinaryName,
+  api_key: config.cloudinaryKey,
+  api_secret: config.cloudinarySecret,
+});
+
+const storage = createCloudinaryStorage({
   cloudinary,
   folder: 'uploads',
   allowedFormats: ['jpg', 'png'],
@@ -13,4 +18,4 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-module.exports = { upload };
+module.exports = upload;

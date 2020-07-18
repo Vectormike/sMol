@@ -3,11 +3,11 @@ const { Vendor } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const uploadVendorImage = async (userId, file) => {
+  const { path } = file;
   try {
-    const { url } = file;
     const updatedImage = await Vendor.findByIdAndUpdate(
       userId,
-      { vendorImageLink: url },
+      { vendorImageLink: path },
       {
         useFindAndModify: false,
       }
