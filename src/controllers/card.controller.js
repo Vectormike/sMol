@@ -4,7 +4,7 @@ const { cardService } = require('../services');
 
 const getCard = catchAsync(async (req, res) => {
   const card = await cardService.getCard();
-  res.status(httpStatus.FOUND).json({ card });
+  res.json({ card });
 });
 
 const createCard = catchAsync(async (req, res) => {

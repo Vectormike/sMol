@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.route('/').get(auth(), cardController.getCard);
 router.route('/').post(auth('user'), cardController.createCard);
-router.route('/:id').delete(auth('vendor'), cardController.deleteCard);
+router.route('/:id').delete(auth('user'), cardController.deleteCard);
 
 module.exports = router;
