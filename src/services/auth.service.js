@@ -63,13 +63,13 @@ const refreshAuth = async (refreshToken) => {
  */
 const refreshVendorAuth = async (refreshToken) => {
   try {
-    const refreshTokenDoc = await tokenService.verifyToken(refreshToken, 'refresh');
+    const refreshTokenDoc = await tokenService.verifyVendorToken(refreshToken, 'refresh');
     const vendor = await vendorService.getVendorById(refreshTokenDoc.vendor);
     if (!vendor) {
       throw new Error();
     }
     await refreshTokenDoc.remove();
-    return tokenService.generateAuthTokens(vendor);
+    return tokenService.generateVendorAuthTokens(vendor);
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
   }

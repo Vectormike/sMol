@@ -99,6 +99,31 @@ const generateAuthTokens = async (user) => {
 };
 
 /**
+ * Generate auth tokens
+ * @param {User} user
+ * @returns {Promise<Object>}
+ */
+const generateVendorAuthTokens = async (vendor) => {
+  const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
+  const accessToken = generateToken(vendor.id, accessTokenExpires);
+
+  const refreshTokenExpires = moment().add(config.jwt.refreshExpirationDays, 'days');
+  const refreshToken = generateToken(vendor.id, refreshTokenExpires);
+  await saveToken(refreshToken, vendor.id, refreshTokenExpires, 'refresh');
+
+  return {
+    access: {
+      token: accessToken,
+      expires: accessTokenExpires.toDate(),
+    },
+    refresh: {
+      token: refreshToken,
+      expires: refreshTokenExpires.toDate(),
+    },
+  };
+};
+
+/**
  * Generate reset password token
  * @param {string} email
  * @returns {Promise<string>}
@@ -136,6 +161,7 @@ module.exports = {
   verifyToken,
   verifyVendorToken,
   generateAuthTokens,
+  generateVendorAuthTokens,
   generateResetPasswordToken,
   generateVendorResetPasswordToken,
 };
