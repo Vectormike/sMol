@@ -63,8 +63,8 @@ const refreshAuth = async (refreshToken) => {
  */
 const refreshVendorAuth = async (refreshToken) => {
   try {
-    const refreshTokenDoc = await tokenService.verifyVendorToken(refreshToken, 'refresh');
-    const vendor = await vendorService.getVendorById(refreshTokenDoc.vendor);
+    const refreshTokenDoc = await tokenService.verifyToken(refreshToken, 'refresh');
+    const vendor = await vendorService.getVendorById(refreshTokenDoc.user);
     if (!vendor) {
       throw new Error();
     }
