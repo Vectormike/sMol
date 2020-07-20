@@ -9,3 +9,4 @@ module.exports.homeserviceService = require('./homeservice.service');
 module.exports.beautyzoneService = require('./beautyzone.service');
 module.exports.geolocationService = require('./geolocation.service');
 module.exports.cardService = require('./card.service');
+module.exports.cartService = require('./cart.service');

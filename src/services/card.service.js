@@ -9,7 +9,7 @@ const getAllCards = async () => {
 };
 
 const getCard = async (id) => {
-  const card = await Card.findById(id);
+  const card = await Card.find({ user: id });
   return card;
 };
 

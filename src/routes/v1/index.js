@@ -8,6 +8,7 @@ const fooditRoute = require('./foodit.route');
 const homeserviceRoute = require('./homeservice.route');
 const beautyzoneRoute = require('./beautyzone.route');
 const cardRoute = require('./card.route');
+const cartRoute = require('./cart.route');
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.use('/location', geolocationRoute);
 router.use('/foodservice', fooditRoute);
 router.use('/homeservice', homeserviceRoute);
 router.use('/beautyzone', beautyzoneRoute);
+router.use('/cart', cartRoute);
 router.use('/card', cardRoute);
 
 module.exports = router;

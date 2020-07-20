@@ -5,3 +5,4 @@ module.exports.Foodit = require('./foodit.model');
 module.exports.BeautyZone = require('./beautyZone.model');
 module.exports.HomeService = require('./homeservice.model');
 module.exports.Card = require('./card.model');
+module.exports.Cart = require('./cart.model');
