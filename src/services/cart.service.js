@@ -1,10 +1,9 @@
 const httpStatus = require('http-status');
-const { Cart, CartItem } = require('../models');
+const { Cart } = require('../models');
 const ApiError = require('../utils/ApiError');
 
-const createCart = async (itemBody) => {
-  const cartItem = await CartItem.create(itemBody);
-  const cart = await Cart.create({ ...itemBody, items: [cartItem._id] });
+const createCart = async (cartBody) => {
+  const cart = await Cart.create(cartBody);
   return cart;
 };
 
@@ -13,11 +12,14 @@ const getCart = async (id) => {
   return cart;
 };
 
-const removeItemFromCart = async (id, user) => {
-  try {
-    await CartItem.findOneAndRemove(id, { useFindAndModify: false });
-  } catch (error) {
-    return error;
+const emptyCart = async (id) => {
+  const cart = await Cart.find({ userId: id });
+  if (cart) {
+    cart.items = [];
+    cart.totalAmount = 0;
+    const newCart = await cart.save();
+    return newCart;
   }
+  throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found');
 };
-module.exports = { createCart, getCart, removeItemFromCart };
+module.exports = { createCart, getCart, emptyCart };
