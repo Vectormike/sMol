@@ -8,6 +8,6 @@ router.route('/').get(auth('user'), cartController.getCart);
 // router.route('/').get(auth(), cardController.getAllCards);
 router.route('/').post(auth('user'), cartController.createCart);
 router.route('/:id').post(auth('user'), cartController.removeItem);
-router.route('/').post(auth('user'), cartController.emptyCart);
+// router.route('/').post(auth('user'), cartController.emptyCart);
 
 module.exports = router;
