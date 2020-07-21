@@ -10,7 +10,7 @@ module.exports = router;
 
 /**
  * @swagger
- * tags:
+ * tags:1
  *   name: Location
  *   description: Get user's location information
  */
