@@ -7,4 +7,5 @@ module.exports.HomeService = require('./homeservice.model');
 module.exports.GameZone = require('./gamezone.model');
 module.exports.Card = require('./card.model');
 module.exports.Cart = require('./cart.model');
+module.exports.CartItem = require('./cartItem.model');
 module.exports.Item = require('./item.model');

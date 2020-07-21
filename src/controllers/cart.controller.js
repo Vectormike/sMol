@@ -12,9 +12,9 @@ const getCart = catchAsync(async (req, res) => {
   res.json({ cart });
 });
 
-const emptyCart = catchAsync(async (req, res) => {
-  const cart = await cartService.emptyCart(req.user.id);
+const removeItem = catchAsync(async (req, res) => {
+  const cart = await cartService.removeItemFromCart(req.params.id, req.user.id);
   res.json({ cart });
 });
 
-module.exports = { createCart, getCart, emptyCart };
+module.exports = { createCart, getCart, removeItem };

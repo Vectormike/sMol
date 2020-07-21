@@ -31,10 +31,10 @@ const updateItem = async (userId, body) => {
   }
 };
 
-const deleteFood = async (params) => {
+const deleteItem = async (params) => {
   const { id } = params;
   try {
-    await Foodit.findOneAndRemove(id, { useFindAndModify: false });
+    await Item.findOneAndRemove(id, { useFindAndModify: false });
   } catch (error) {
     return error;
   }
@@ -45,5 +45,5 @@ module.exports = {
   getItems,
   getItemById,
   updateItem,
-  deleteFood,
+  deleteItem,
 };
