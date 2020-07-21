@@ -19,10 +19,9 @@ const fooditSchema = mongoose.Schema(
     },
     items: [
       {
-        name: String,
-        description: String,
-        price: Number,
-        deliveryTime: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Item',
+        required: true,
       },
     ],
   },

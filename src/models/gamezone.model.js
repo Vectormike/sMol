@@ -19,11 +19,9 @@ const gamezoneSchema = mongoose.Schema(
     },
     items: [
       {
-        name: String,
-        image: String,
-        description: String,
-        price: Number,
-        deliveryTime: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Item',
+        required: true,
       },
     ],
   },
