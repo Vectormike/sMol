@@ -8,10 +8,6 @@ const beautyZone = mongoose.Schema(
       ref: 'Vendor',
       required: true,
     },
-    vendorType: {
-      type: String,
-      required: true,
-    },
     ratings: {
       type: Number,
       max: 5,
@@ -19,9 +15,9 @@ const beautyZone = mongoose.Schema(
     },
     items: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Item',
-        required: true,
+        name: String,
+        description: String,
+        price: Number,
       },
     ],
   },
