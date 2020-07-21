@@ -5,6 +5,6 @@ const uploadController = require('../../controllers/upload.controller');
 
 const router = express.Router();
 
-router.route('/vendor/:id').post(auth('vendor'), upload.single('file'), uploadController.uploadVendorImage);
+router.route('/').post(auth('vendor'), upload.single('file'), uploadController.imageUpload);
 
 module.exports = router;
