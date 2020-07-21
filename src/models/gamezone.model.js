@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 
-const fooditSchema = mongoose.Schema(
+const gamezoneSchema = mongoose.Schema(
   {
     vendorId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -31,9 +31,9 @@ const fooditSchema = mongoose.Schema(
 );
 
 // add plugin that converts mongoose to json
-fooditSchema.plugin(toJSON);
-fooditSchema.plugin(paginate);
+gamezoneSchema.plugin(toJSON);
+gamezoneSchema.plugin(paginate);
 
-const Foodit = mongoose.model('Foodit', fooditSchema);
+const Gamezone = mongoose.model('Gamezone', gamezoneSchema);
 
-module.exports = Foodit;
+module.exports = Gamezone;

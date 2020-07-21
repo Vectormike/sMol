@@ -8,7 +8,10 @@ const homeServiceSchema = mongoose.Schema(
       ref: 'Vendor',
       required: true,
     },
-    image: { type: String },
+    vendorType: {
+      type: String,
+      required: true,
+    },
     ratings: {
       type: Number,
       max: 5,
@@ -16,10 +19,9 @@ const homeServiceSchema = mongoose.Schema(
     },
     items: [
       {
-        name: String,
-        description: String,
-        price: Number,
-        arrivalTime: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Item',
+        required: true,
       },
     ],
   },
