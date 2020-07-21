@@ -7,9 +7,4 @@ const uploadVendorImage = catchAsync(async (req, res) => {
   res.json({ vendor });
 });
 
-const uploadItemImage = catchAsync(async (req, res) => {
-  const item = await uploadService.uploadItemImage(req.params.id, req.file);
-  res.json({ item });
-});
-
-module.exports = { uploadVendorImage, uploadItemImage };
+module.exports = { uploadVendorImage };
