@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const httpStatus = require('http-status');
 const { Cart } = require('../models');
 const ApiError = require('../utils/ApiError');
@@ -12,14 +13,22 @@ const getCart = async (id) => {
   return cart;
 };
 
-const emptyCart = async (id) => {
-  const cart = await Cart.find({ userId: id });
-  if (cart) {
-    cart.items = [];
-    cart.totalAmount = 0;
-    const newCart = await cart.save();
-    return newCart;
+const emptyCart = async (cartId, itemId) => {
+  try {
+    const deletedItem = await Cart.findByIdAndUpdate(
+      cartId,
+      { $pull: { items: { _id: itemId } } },
+      { safe: true, upsert: true, useFindAndModify: false },
+      function (err) {
+        if (err) console.log(err);
+      }
+    );
+    if (!deletedItem) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Item not deleted');
+    }
+  } catch (error) {
+    return error;
   }
-  throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found');
 };
+
 module.exports = { createCart, getCart, emptyCart };
