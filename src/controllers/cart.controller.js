@@ -13,7 +13,7 @@ const getCart = catchAsync(async (req, res) => {
 });
 
 const emptyCart = catchAsync(async (req, res) => {
-  const cart = await cartService.emptyCart(req.user.id);
+  const cart = await cartService.emptyCart(req.params.id, req.query.itemId);
   res.json({ cart });
 });
 
