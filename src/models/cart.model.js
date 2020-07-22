@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const { Schema } = mongoose;
 
 const ItemSchema = new Schema(
@@ -11,6 +12,9 @@ const ItemSchema = new Schema(
       type: Number,
       required: true,
       min: [1, 'Quantity can not be less then 1.'],
+    },
+    description: {
+      type: String,
     },
     price: {
       type: Number,
