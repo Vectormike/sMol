@@ -14,10 +14,24 @@ const orderSchema = new Schema(
       ref: 'Cart',
       required: true,
     },
-    status: {
+    vendorId: {
+      type: String,
+      ref: 'Vendor',
+      required: true,
+    },
+    items: [{ name: String, image: String, description: String, quantity: String, price: String }],
+    totalAmount: {
+      type: Number,
+      required: true,
+    },
+    shippingStatus: {
       type: String,
       enum: status,
       default: 'Pending',
+      required: true,
+    },
+    shippingAddress: {
+      type: String,
       required: true,
     },
   },

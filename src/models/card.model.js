@@ -7,27 +7,37 @@ const cardSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    holder: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    number: {
-      type: Number,
-      required: true,
-    },
-    expiration: {
+    email: {
       type: String,
       required: true,
     },
-    cvv: {
+    authorizationCode: {
+      type: String,
+      required: true,
+    },
+    cardType: {
+      type: String,
+      required: true,
+    },
+    bin: {
       type: Number,
       required: true,
     },
-    isActive: {
-      type: Boolean,
+    last4: {
+      type: Number,
       required: true,
-      default: true,
+    },
+    expMonth: {
+      type: Number,
+      required: true,
+    },
+    expYear: {
+      type: Number,
+      required: true,
+    },
+    bank: {
+      type: String,
+      required: true,
     },
   },
   {

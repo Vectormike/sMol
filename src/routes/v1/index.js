@@ -10,6 +10,7 @@ const beautyzoneRoute = require('./beautyzone.route');
 const gamezoneRoute = require('./gamezone.route');
 const cardRoute = require('./card.route');
 const cartRoute = require('./cart.route');
+const orderRoute = require('./order.route');
 
 const router = express.Router();
 
@@ -24,5 +25,6 @@ router.use('/beautyzone', beautyzoneRoute);
 router.use('/gamezone', gamezoneRoute);
 router.use('/cart', cartRoute);
 router.use('/card', cardRoute);
+router.use('/order', orderRoute);
 
 module.exports = router;
