@@ -44,6 +44,18 @@ const vendorSchema = mongoose.Schema(
       },
       private: true, // used by the toJSON plugin
     },
+    bank: {
+      type: String,
+      required: true,
+    },
+    accountNumber: {
+      type: String,
+      required: true,
+    },
+    subaccountCode: {
+      type: String,
+      required: true,
+    },
     role: {
       type: String,
       enum: roles,

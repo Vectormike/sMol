@@ -1,22 +1,44 @@
+/* eslint-disable no-console */
+/* eslint-disable import/order */
 const httpStatus = require('http-status');
-const bcrypt = require('bcryptjs');
-const tokenService = require('./token.service');
-const userService = require('./user.service');
-const Token = require('../models/token.model');
+const config = require('../config/config');
 const ApiError = require('../utils/ApiError');
 const Vendor = require('../models/vendor.model');
-const logger = require('../config/logger');
+const paystack = require('paystack')(config.paystack);
+
 /**
  * Create a user
  * @param {Object} vendorBody
  * @returns {Promise<User>}
  */
 const createVendor = async (vendorBody) => {
-  if (await Vendor.isEmailTaken(vendorBody.email)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  const { name, email, description, address, password, bank, accountNumber, businessName } = vendorBody;
+  try {
+    if (await Vendor.isEmailTaken(email)) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+    }
+    const subaccountResponse = await paystack.subaccount.create({
+      business_name: businessName,
+      settlement_bank: bank,
+      account_number: accountNumber,
+      percentage_charge: 4,
+    });
+    if (subaccountResponse) {
+      const vendor = await Vendor.create({
+        name,
+        email,
+        description,
+        address,
+        password,
+        bank,
+        accountNumber,
+        subaccountCode: subaccountResponse.data.subaccount_code,
+      });
+      return vendor;
+    }
+  } catch (error) {
+    return error;
   }
-  const vendor = await Vendor.create(vendorBody);
-  return vendor;
 };
 
 /**
@@ -44,16 +66,23 @@ const getVendorByEmail = async (email) => {
  * @returns {Promise<User>}
  */
 const updateVendorById = async (vendorId, updateBody) => {
-  const vendor = await getVendorById(vendorId);
-  if (!vendor) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  try {
+    const vendor = await getVendorById(vendorId);
+    if (!vendor) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Vendor not found');
+    }
+    if (updateBody.email && (await Vendor.isEmailTaken(updateBody.email, vendorId))) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+    }
+    // const subaccountUpdateResponse = await paystack.subaccount.update({
+    //   percentage_charge: 0,
+    // });
+    Object.assign(vendor, updateBody);
+    await vendor.save();
+    return vendor;
+  } catch (error) {
+    return error;
   }
-  if (updateBody.email && (await Vendor.isEmailTaken(updateBody.email, vendorId))) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  }
-  Object.assign(vendor, updateBody);
-  await vendor.save();
-  return vendor;
 };
 
 const updateVendorPasswordByEmail = async (email, password) => {
