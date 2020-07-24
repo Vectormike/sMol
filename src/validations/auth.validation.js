@@ -18,6 +18,9 @@ const registerVendor = {
     description: Joi.string().required(),
     address: Joi.string().required(),
     password: Joi.string().required().custom(password),
+    businessName: Joi.string().required(),
+    bank: Joi.string().required(),
+    accountNumber: Joi.string().required(),
   }),
 };
 
