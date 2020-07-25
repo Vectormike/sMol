@@ -7,10 +7,10 @@ const createOrder = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).json({ order });
 });
 
-// const getBeautyZone = catchAsync(async (req, res) => {
-//   const beautyzone = await beautyzoneService.getBeautyZones();
-//   res.status(httpStatus.CREATED).json({ beautyzone });
-// });
+const refundOrder = catchAsync(async (req, res) => {
+  await orderService.refundOrder(req.params.id);
+  res.status(httpStatus.ACCEPTED);
+});
 
 // const updateBeautyZone = catchAsync(async (req, res) => {
 //   const beautyzone = await beautyzoneService.updateBeautyZone(req.params.id, req.body);
@@ -22,4 +22,4 @@ const createOrder = catchAsync(async (req, res) => {
 //   res.status(httpStatus.OK).end();
 // });
 
-module.exports = { createOrder };
+module.exports = { createOrder, refundOrder };

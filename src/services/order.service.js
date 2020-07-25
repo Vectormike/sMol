@@ -40,14 +40,14 @@ const createOrder = async (orderBody, userId) => {
 
       const response = await axios(config);
       if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Payment unsuccessful');
-      const order = new Order({
+      const order = await Order.create({
         vendorId: orderBody.vendorId,
         shippingAddress: userDetails.homeAddress,
         shippingStatus: 'Pending',
         totalAmount,
         items: orderBody.items,
       });
-      const transaction = new Transaction({
+      const transaction = await Transaction.create({
         orderId: order.id,
         status: 'Paid',
         paymentId: reference,
@@ -86,15 +86,16 @@ const createOrder = async (orderBody, userId) => {
       };
       const response = await axios(config);
       if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Payment unsuccessful');
-      const order = new Order({
+      const order = await Order.create({
         cartId: orderBody.cartId,
         vendorId: orderBody.vendorId,
+        paymentId: reference,
         shippingAddress: userDetails.homeAddress,
         shippingStatus: 'Pending',
         totalAmount,
         items: orderBody.items,
       });
-      const transaction = new Transaction({
+      const transaction = await Transaction.create({
         orderId: order.id,
         status: 'Paid',
         paymentId: reference,
@@ -108,30 +109,35 @@ const createOrder = async (orderBody, userId) => {
   }
 };
 
-// const getBeautyZones = async () => {
-//     const beautyzone = await BeautyZone.find().populate('vendorId');
-//     return beautyzone;
-// };
+const refundOrder = async (orderId) => {
+  try {
+    const order = await Order.findById(orderId);
+    console.log(order);
+    if (!order) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+    }
+    const data = JSON.stringify({
+      reference: order.paymentId,
+    });
 
-// /**
-//  * Update Food by id
-//  * @param {ObjectId} userId
-//  * @param {Object} updateBody
-//  * @returns {Promise<User>}
-//  */
-// const updateBeautyZone = async (userId, body) => {
-//     try {
-//         const beautyzone = await BeautyZone.findByIdAndUpdate(userId, body, {
-//             useFindAndModify: false,
-//             new: true,
-//         });
-//         if (!beautyzone) {
-//             throw new ApiError(httpStatus.NOT_FOUND, 'Food not updated');
-//         }
-//     } catch (error) {
-//         return error;
-//     }
-// };
+    const config = {
+      method: 'post',
+      url: 'https://api.paystack.co/refund',
+      headers: {
+        Authorization: `Bearer ${confiG.paystack}`,
+        'Content-Type': 'application/json',
+      },
+      data,
+    };
+    console.log('Here');
+    const response = await axios(config);
+    await order.remove();
+
+    if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Refund unsuccessful');
+  } catch (error) {
+    return error;
+  }
+};
 
 // const deleteBeautyZone = async (params) => {
 //     const { id } = params;
@@ -142,4 +148,4 @@ const createOrder = async (orderBody, userId) => {
 //     }
 // };
 
-module.exports = { createOrder };
+module.exports = { createOrder, refundOrder };
