@@ -24,6 +24,10 @@ const orderSchema = new Schema(
       type: Number,
       required: true,
     },
+    paymentId: {
+      type: String,
+      required: true,
+    },
     shippingStatus: {
       type: String,
       enum: status,
@@ -32,7 +36,6 @@ const orderSchema = new Schema(
     },
     shippingAddress: {
       type: String,
-      required: true,
     },
   },
   {

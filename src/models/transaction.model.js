@@ -22,7 +22,6 @@ const transactionSchema = new Schema(
     },
     shippingAddress: {
       type: String,
-      required: true,
     },
     paymentType: {
       type: String,
