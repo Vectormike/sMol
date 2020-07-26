@@ -1,5 +1,6 @@
 /* eslint-disable import/order */
 const axios = require('axios');
+const FormData = require('form-data');
 const httpStatus = require('http-status');
 const crypto = require('crypto');
 const confiG = require('../config/config');
@@ -78,7 +79,15 @@ const createOrder = async (orderBody, userId) => {
         shipToFriend: orderBody.shipToFriend,
         paymentType: 'Card',
       });
-      return { order, transaction };
+      const updatedOrder = await Order.findByIdAndUpdate(
+        order.id,
+        { transactionId: transaction.id },
+        {
+          useFindAndModify: false,
+          new: true,
+        }
+      );
+      return { updatedOrder, transaction };
     }
     if (cartDetails.totalAmount < 1000) {
       const updateSubaccountResponse = await paystack.subaccount.update('ACCT_stzudtgqm66bp0z', {
@@ -128,7 +137,15 @@ const createOrder = async (orderBody, userId) => {
           shipToFriend: orderBody.shipToFriend,
           paymentType: 'Card',
         });
-        return { order, transaction };
+        const updatedOrder = await Order.findByIdAndUpdate(
+          order.id,
+          { transactionId: transaction.id },
+          {
+            useFindAndModify: false,
+            new: true,
+          }
+        );
+        return { updatedOrder, transaction };
       }
       const order = await Order.create({
         cartId: orderBody.cartId,
@@ -146,7 +163,15 @@ const createOrder = async (orderBody, userId) => {
         shippingAddress: userDetails.homeAddress,
         paymentType: 'Card',
       });
-      return { order, transaction };
+      const updatedOrder = await Order.findByIdAndUpdate(
+        order.id,
+        { transactionId: transaction.id },
+        {
+          useFindAndModify: false,
+          new: true,
+        }
+      );
+      return { updatedOrder, transaction };
     }
   } catch (error) {
     return error;
@@ -155,25 +180,36 @@ const createOrder = async (orderBody, userId) => {
 
 const refundOrder = async (orderId) => {
   try {
-    const order = await Order.findById(orderId);
-    if (!order) {
+    const orderDetails = await Order.findById(orderId);
+    if (!orderDetails) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
     }
+
     const data = JSON.stringify({
-      reference: order.paymentId,
+      transaction: orderDetails.paymentId,
     });
 
     const config = {
       method: 'post',
       url: 'https://api.paystack.co/refund',
       headers: {
-        Authorization: `Bearer ${confiG.paystack}`,
+        Authorization: `${confiG.paystack}`,
         'Content-Type': 'application/json',
       },
       data,
     };
+
     const response = await axios(config);
-    await order.remove();
+    const transaction = await Transaction.findByIdAndUpdate(
+      orderDetails.transactionId,
+      { status: 'Refund' },
+      {
+        useFindAndModify: false,
+        new: true,
+      }
+    );
+    console.log(transaction);
+    await orderDetails.remove();
 
     if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Refund unsuccessful');
   } catch (error) {
@@ -181,13 +217,20 @@ const refundOrder = async (orderId) => {
   }
 };
 
-// const deleteBeautyZone = async (params) => {
-//     const { id } = params;
-//     try {
-//         await BeautyZone.findOneAndRemove(id, { useFindAndModify: false });
-//     } catch (error) {
-//         return error;
-//     }
-// };
+const shipOrder = async (orderId) => {
+  try {
+    const orderDetails = await Order.findByIdAndUpdate(
+      orderId,
+      { shippingStatus: 'Shipped' },
+      {
+        useFindAndModify: false,
+        new: true,
+      }
+    );
+    return { orderDetails };
+  } catch (error) {
+    return error;
+  }
+};
 
-module.exports = { createOrder, refundOrder };
+module.exports = { createOrder, refundOrder, shipOrder };

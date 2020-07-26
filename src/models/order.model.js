@@ -14,6 +14,10 @@ const orderSchema = new Schema(
       ref: 'Cart',
       required: true,
     },
+    transactionId: {
+      type: String,
+      ref: 'Transaction',
+    },
     vendorId: {
       type: String,
       ref: 'Vendor',

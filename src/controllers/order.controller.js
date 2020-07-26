@@ -12,14 +12,14 @@ const refundOrder = catchAsync(async (req, res) => {
   res.status(httpStatus.ACCEPTED);
 });
 
-// const updateBeautyZone = catchAsync(async (req, res) => {
-//   const beautyzone = await beautyzoneService.updateBeautyZone(req.params.id, req.body);
-//   res.status(httpStatus.CREATED).json({ beautyzone });
-// });
+const shipOrder = catchAsync(async (req, res) => {
+  const order = await orderService.shipOrder(req.params.id);
+  res.status(httpStatus.CREATED).json({ order });
+});
 
 // const deleteBeautyZone = catchAsync(async (req, res) => {
 //   await beautyzoneService.deleteBeautyZone(req.params);
 //   res.status(httpStatus.OK).end();
 // });
 
-module.exports = { createOrder, refundOrder };
+module.exports = { createOrder, refundOrder, shipOrder };
