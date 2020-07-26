@@ -8,8 +8,8 @@ const createOrder = catchAsync(async (req, res) => {
 });
 
 const refundOrder = catchAsync(async (req, res) => {
-  await orderService.refundOrder(req.params.id);
-  res.status(httpStatus.ACCEPTED);
+  const order = await orderService.refundOrder(req.params.orderId);
+  res.status(httpStatus.ACCEPTED).json({ order });
 });
 
 const shipOrder = catchAsync(async (req, res) => {

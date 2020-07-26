@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable import/order */
 const axios = require('axios');
 const FormData = require('form-data');
@@ -181,6 +182,7 @@ const createOrder = async (orderBody, userId) => {
 const refundOrder = async (orderId) => {
   try {
     const orderDetails = await Order.findById(orderId);
+    console.log(orderDetails);
     if (!orderDetails) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
     }
@@ -193,13 +195,13 @@ const refundOrder = async (orderId) => {
       method: 'post',
       url: 'https://api.paystack.co/refund',
       headers: {
-        Authorization: `${confiG.paystack}`,
+        Authorization: `Bearer ${confiG.paystack}`,
         'Content-Type': 'application/json',
       },
       data,
     };
-
     const response = await axios(config);
+    if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Refund unsuccessful');
     const transaction = await Transaction.findByIdAndUpdate(
       orderDetails.transactionId,
       { status: 'Refund' },
@@ -208,10 +210,9 @@ const refundOrder = async (orderId) => {
         new: true,
       }
     );
-    console.log(transaction);
-    await orderDetails.remove();
-
-    if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Refund unsuccessful');
+    await Order.findByIdAndRemove(orderId, { useFindAndModify: false });
+    const refund = response.data;
+    return { refund, transaction };
   } catch (error) {
     return error;
   }
@@ -233,4 +234,20 @@ const shipOrder = async (orderId) => {
   }
 };
 
-module.exports = { createOrder, refundOrder, shipOrder };
+const deliverOrder = async (orderId) => {
+  try {
+    const orderDetails = await Order.findByIdAndUpdate(
+      orderId,
+      { shippingStatus: 'Delivered' },
+      {
+        useFindAndModify: false,
+        new: true,
+      }
+    );
+    return { orderDetails };
+  } catch (error) {
+    return error;
+  }
+};
+
+module.exports = { createOrder, refundOrder, shipOrder, deliverOrder };

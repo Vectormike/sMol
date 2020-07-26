@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 /**
  * Order status
  */
-const status = ['Pending', 'Shipped', 'Delivered', 'Cancelled', 'Refund'];
+const status = ['Pending', 'Shipped', 'Delivered', 'Refund'];
 
 const orderSchema = new Schema(
   {
