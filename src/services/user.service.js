@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const httpStatus = require('http-status');
 const { User } = require('../models');
 const ApiError = require('../utils/ApiError');
@@ -69,7 +70,7 @@ const updateUserById = async (userId, updateBody) => {
 };
 
 const updateUserPasswordByEmail = async (email, password) => {
-  return User.findOneAndUpdate({ email }, { $set: { password } }, { new: true });
+  return User.findOneAndUpdate({ email }, { $set: { password } }, { useFindAndModify: false }, { new: true });
 };
 
 module.exports = {
