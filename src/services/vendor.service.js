@@ -15,7 +15,7 @@ const createVendor = async (vendorBody) => {
   const { name, email, description, address, password, bank, accountNumber, businessName } = vendorBody;
   try {
     if (await Vendor.isEmailTaken(email)) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+      throw new Error();
     }
     const subaccountResponse = await paystack.subaccount.create({
       business_name: businessName,
@@ -37,7 +37,7 @@ const createVendor = async (vendorBody) => {
       return vendor;
     }
   } catch (error) {
-    return error;
+    throw new ApiError(httpStatus.NOT_FOUND, 'Email already taken');
   }
 };
 
