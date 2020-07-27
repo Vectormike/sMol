@@ -2,6 +2,16 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { orderService } = require('../services');
 
+const getAllOrders = catchAsync(async (req, res) => {
+  const orders = await orderService.getAllOrders();
+  res.status(httpStatus.CREATED).json({ orders });
+});
+
+const getOrders = catchAsync(async (req, res) => {
+  const orders = await orderService.getOrders();
+  res.status(httpStatus.CREATED).json({ orders });
+});
+
 const createOrder = catchAsync(async (req, res) => {
   const order = await orderService.createOrder(req.body, req.user.id);
   res.status(httpStatus.CREATED).json({ order });
@@ -22,4 +32,4 @@ const shipOrder = catchAsync(async (req, res) => {
 //   res.status(httpStatus.OK).end();
 // });
 
-module.exports = { createOrder, refundOrder, shipOrder };
+module.exports = { getAllOrders, getOrders, createOrder, refundOrder, shipOrder };

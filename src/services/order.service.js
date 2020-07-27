@@ -1,13 +1,22 @@
 /* eslint-disable no-console */
 /* eslint-disable import/order */
 const axios = require('axios');
-const FormData = require('form-data');
 const httpStatus = require('http-status');
 const crypto = require('crypto');
 const confiG = require('../config/config');
 const paystack = require('paystack')(confiG.paystack);
 const { Order, Transaction, User, Vendor, Cart } = require('../models');
 const ApiError = require('../utils/ApiError');
+
+const getAllOrders = async () => {
+  const orders = await Order.find().populate('cartId').populate('transactionId').populate('vendorId').exec();
+  return orders;
+};
+
+const getOrders = async () => {
+  const orders = await Order.find().populate('cartId').populate('transactionId').populate('vendorId').exec();
+  return orders;
+};
 
 const createOrder = async (orderBody, userId) => {
   const reference = crypto.randomBytes(5).toString('hex');
@@ -94,7 +103,7 @@ const createOrder = async (orderBody, userId) => {
       const updateSubaccountResponse = await paystack.subaccount.update('ACCT_stzudtgqm66bp0z', {
         percentage_charge: 0,
       });
-      if (!updateSubaccountResponse) throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Percentage charge not updated');
+      if (!updateSubaccountResponse) throw new Error();
       const data = JSON.stringify({
         email: userDetails.email,
         amount: totalAmount,
@@ -119,7 +128,7 @@ const createOrder = async (orderBody, userId) => {
         data,
       };
       const response = await axios(config);
-      if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Payment unsuccessful');
+      if (!response) throw new Error();
       if (orderBody.shippingAddress) {
         const order = await Order.create({
           cartId: orderBody.cartId,
@@ -175,7 +184,7 @@ const createOrder = async (orderBody, userId) => {
       return { updatedOrder, transaction };
     }
   } catch (error) {
-    return error;
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Unable to make order');
   }
 };
 
@@ -250,4 +259,4 @@ const deliverOrder = async (orderId) => {
   }
 };
 
-module.exports = { createOrder, refundOrder, shipOrder, deliverOrder };
+module.exports = { getAllOrders, getOrders, createOrder, refundOrder, shipOrder, deliverOrder };
