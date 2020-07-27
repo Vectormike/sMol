@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const httpStatus = require('http-status');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
@@ -88,6 +89,7 @@ const resetPassword = async (body) => {
   const password = hash;
   try {
     const user = await userService.updateUserPasswordByEmail(email, password);
+
     if (!user) {
       throw new Error();
     }

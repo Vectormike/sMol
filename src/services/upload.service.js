@@ -8,7 +8,7 @@ const imageUpload = async (file) => {
     const imageLink = path;
     return imageLink;
   } catch (error) {
-    return error;
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Image upload failed');
   }
 };
 
