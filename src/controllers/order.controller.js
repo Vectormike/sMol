@@ -7,13 +7,13 @@ const getAllOrders = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).json({ orders });
 });
 
-const getOrders = catchAsync(async (req, res) => {
-  const orders = await orderService.getOrders();
+const getUserOrders = catchAsync(async (req, res) => {
+  const orders = await orderService.getUserOrders(req.user.id);
   res.status(httpStatus.CREATED).json({ orders });
 });
 
 const getVendorOrders = catchAsync(async (req, res) => {
-  const orders = await orderService.getVendorOrders(req.params.vendorId);
+  const orders = await orderService.getVendorOrders(req.user.id);
   res.status(httpStatus.OK).json({ orders });
 });
 
@@ -37,4 +37,4 @@ const shipOrder = catchAsync(async (req, res) => {
 //   res.status(httpStatus.OK).end();
 // });
 
-module.exports = { getAllOrders, getOrders, getVendorOrders, createOrder, refundOrder, shipOrder };
+module.exports = { getAllOrders, getUserOrders, getVendorOrders, createOrder, refundOrder, shipOrder };

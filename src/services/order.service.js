@@ -13,14 +13,18 @@ const getAllOrders = async () => {
   return orders;
 };
 
-const getOrders = async () => {
-  const orders = await Order.find().populate('cartId').populate('transactionId').populate('vendorId').exec();
+const getUserOrders = async (userId) => {
+  const orders = await Order.find({ user: userId }).populate('cartId').populate('transactionId').populate('vendorId').exec();
   return orders;
 };
 
-const getVendorOrders = async (vendorId) => {
-  const ordersDetails = await Order.findOne({ vendorId });
-  return ordersDetails;
+const getVendorOrders = async (userId) => {
+  const orders = await Order.find({ vendorId: userId })
+    .populate('cartId')
+    .populate('transactionId')
+    .populate('vendorId')
+    .exec();
+  return orders;
 };
 
 const createOrder = async (orderBody, userId) => {
@@ -61,6 +65,7 @@ const createOrder = async (orderBody, userId) => {
         const order = await Order.create({
           cartId: orderBody.cartId,
           vendorId: orderBody.vendorId,
+          user: userId,
           shippingAddress: orderBody.shippingAddress,
           shippingStatus: 'Pending',
           totalAmount,
@@ -79,6 +84,7 @@ const createOrder = async (orderBody, userId) => {
       }
       const order = await Order.create({
         cartId: orderBody.cartId,
+        user: userId,
         vendorId: orderBody.vendorId,
         shippingAddress: userDetails.homeAddress,
         shippingStatus: 'Pending',
@@ -164,6 +170,7 @@ const createOrder = async (orderBody, userId) => {
       }
       const order = await Order.create({
         cartId: orderBody.cartId,
+        user: userId,
         vendorId: orderBody.vendorId,
         paymentId: reference,
         shippingAddress: userDetails.homeAddress,
@@ -264,4 +271,4 @@ const deliverOrder = async (orderId) => {
   }
 };
 
-module.exports = { getAllOrders, getOrders, getVendorOrders, createOrder, refundOrder, shipOrder, deliverOrder };
+module.exports = { getAllOrders, getUserOrders, getVendorOrders, createOrder, refundOrder, shipOrder, deliverOrder };
