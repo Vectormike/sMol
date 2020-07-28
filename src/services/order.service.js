@@ -18,6 +18,11 @@ const getOrders = async () => {
   return orders;
 };
 
+const getVendorOrders = async (vendorId) => {
+  const ordersDetails = await Order.findOne({ vendorId });
+  return ordersDetails;
+};
+
 const createOrder = async (orderBody, userId) => {
   const reference = crypto.randomBytes(5).toString('hex');
   try {
@@ -259,4 +264,4 @@ const deliverOrder = async (orderId) => {
   }
 };
 
-module.exports = { getAllOrders, getOrders, createOrder, refundOrder, shipOrder, deliverOrder };
+module.exports = { getAllOrders, getOrders, getVendorOrders, createOrder, refundOrder, shipOrder, deliverOrder };
