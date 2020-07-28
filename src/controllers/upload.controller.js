@@ -1,10 +1,14 @@
-const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { uploadService } = require('../services');
 
-const imageUpload = catchAsync(async (req, res) => {
-  const imageLink = await uploadService.imageUpload(req.file);
-  res.json({ imageLink });
+const vendorImageUpload = catchAsync(async (req, res) => {
+  const vendorImageLink = await uploadService.vendorImageUpload(req.file);
+  res.json({ vendorImageLink });
 });
 
-module.exports = { imageUpload };
+const itemImageUpload = catchAsync(async (req, res) => {
+  const itemImageLink = await uploadService.itemImageUpload(req.file);
+  res.json({ itemImageLink });
+});
+
+module.exports = { vendorImageUpload, itemImageUpload };
