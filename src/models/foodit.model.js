@@ -21,6 +21,7 @@ const fooditSchema = mongoose.Schema(
       {
         name: String,
         description: String,
+        image: String,
         price: Number,
         deliveryTime: String,
       },

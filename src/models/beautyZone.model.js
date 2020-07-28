@@ -16,6 +16,7 @@ const beautyZone = mongoose.Schema(
     items: [
       {
         name: String,
+        image: String,
         description: String,
         price: Number,
       },

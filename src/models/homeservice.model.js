@@ -17,6 +17,7 @@ const homeServiceSchema = mongoose.Schema(
     items: [
       {
         name: String,
+        image: String,
         description: String,
         price: Number,
         arrivalTime: String,
