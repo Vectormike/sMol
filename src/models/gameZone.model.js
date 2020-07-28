@@ -8,6 +8,10 @@ const gamezone = mongoose.Schema(
       ref: 'Vendor',
       required: true,
     },
+    vendorType: {
+      type: String,
+      required: true,
+    },
     ratings: {
       type: Number,
       max: 5,
