@@ -11,12 +11,13 @@ const gamezoneRoute = require('./gamezone.route');
 const cardRoute = require('./card.route');
 const cartRoute = require('./cart.route');
 const orderRoute = require('./order.route');
-
+const vendorRoute = require('./vendor.route')
 const router = express.Router();
 
 router.use('/auth', authRoute);
 router.use('/image', uploadRoute);
 router.use('/users', userRoute);
+router.use('/vendors', vendorRoute);
 router.use('/docs', docsRoute);
 router.use('/location', geolocationRoute);
 router.use('/foodservice', fooditRoute);
