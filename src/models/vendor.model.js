@@ -32,6 +32,9 @@ const vendorSchema = mongoose.Schema(
       required: true,
     },
     vendorImageLink: { type: String },
+    vendorType: {
+      type: String,
+    },
     password: {
       type: String,
       required: true,
