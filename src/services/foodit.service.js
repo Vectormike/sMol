@@ -55,23 +55,22 @@ const updateFood = async (userId, body) => {
  */
 const updateFoodItems = async (params, body) => {
   try {
-    console.log(body);
     const { fooditId, itemId } = params;
     const { name, description, price, deliveryTime } = body;
-    const food = await Foodit.findById(fooditId);
 
-    const itemIndex = food.items.findIndex((elem) => elem.id === itemId);
-
-    const oldItem = food.items[itemIndex];
-
-    const newItem = { ...oldItem, name: name };
-
-    food.items[itemIndex] = newItem;
-
-    await food.save();
-
-    console.log(food);
+    await Foodit.updateOne(
+      { _id: fooditId, 'items._id': itemId },
+      {
+        $set: {
+          'items.$.name': name,
+          'items.$.price': price,
+          'items.$.description': description,
+          'items.$.deliveryTime': deliveryTime,
+        },
+      }
+    );
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
