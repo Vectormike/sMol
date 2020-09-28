@@ -46,6 +46,36 @@ const updateFood = async (userId, body) => {
   }
 };
 
+/**
+ * Update Food items by id
+ * @param {ObjectId} fooditId
+ * @param {ObjectId} itemId
+ * @param {Object} updateBody
+ * @returns {Promise<Items>}
+ */
+const updateFoodItems = async (params, body) => {
+  try {
+    console.log(body);
+    const { fooditId, itemId } = params;
+    const { name, description, price, deliveryTime } = body;
+    const food = await Foodit.findById(fooditId);
+
+    const itemIndex = food.items.findIndex((elem) => elem.id === itemId);
+
+    const oldItem = food.items[itemIndex];
+
+    const newItem = { ...oldItem, name: name };
+
+    food.items[itemIndex] = newItem;
+
+    await food.save();
+
+    console.log(food);
+  } catch (error) {
+    return error;
+  }
+};
+
 const deleteFood = async (params) => {
   const { id } = params;
   try {
@@ -59,5 +89,6 @@ module.exports = {
   createFood,
   getFoods,
   updateFood,
+  updateFoodItems,
   deleteFood,
 };

@@ -8,6 +8,7 @@ const router = express.Router();
 router.route('/').get(auth(), fooditController.getFoods);
 router.route('/').post(auth('vendor'), fooditController.createFood);
 router.route('/:id').patch(auth('vendor'), fooditController.updateFood);
+router.route('/:fooditId/:itemId').put(auth('vendor'), fooditController.updateFoodItems);
 router.route('/:id').delete(auth('vendor'), fooditController.deleteFood);
 
 module.exports = router;
