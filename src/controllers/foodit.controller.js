@@ -17,9 +17,17 @@ const updateFood = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).json({ food });
 });
 
+const updateFoodItems = catchAsync(async (req, res) => {
+  const food = await fooditService.updateFoodItems(req.params, req.body);
+  if (!food) {
+    res.status(httpStatus.NOT_FOUND);
+  }
+  res.status(httpStatus.CREATED).json({ food });
+});
+
 const deleteFood = catchAsync(async (req, res) => {
   await fooditService.deleteFood(req.params, req.body);
   res.status(httpStatus.OK).end();
 });
 
-module.exports = { createFood, getFoods, updateFood, deleteFood };
+module.exports = { createFood, getFoods, updateFood, updateFoodItems, deleteFood };

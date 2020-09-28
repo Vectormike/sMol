@@ -46,6 +46,35 @@ const updateFood = async (userId, body) => {
   }
 };
 
+/**
+ * Update Food items by id
+ * @param {ObjectId} fooditId
+ * @param {ObjectId} itemId
+ * @param {Object} updateBody
+ * @returns {Promise<Items>}
+ */
+const updateFoodItems = async (params, body) => {
+  try {
+    const { fooditId, itemId } = params;
+    const { name, description, price, deliveryTime } = body;
+
+    await Foodit.updateOne(
+      { _id: fooditId, 'items._id': itemId },
+      {
+        $set: {
+          'items.$.name': name,
+          'items.$.price': price,
+          'items.$.description': description,
+          'items.$.deliveryTime': deliveryTime,
+        },
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
 const deleteFood = async (params) => {
   const { id } = params;
   try {
@@ -59,5 +88,6 @@ module.exports = {
   createFood,
   getFoods,
   updateFood,
+  updateFoodItems,
   deleteFood,
 };
