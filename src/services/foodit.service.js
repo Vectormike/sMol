@@ -27,6 +27,34 @@ const createFood = async (foodBody) => {
 };
 
 /**
+ * Insert items into foodit by id
+ * @param {ObjectId} fooditId
+ * @param {Object} updateBody
+ * @returns {Promise<User>}
+ */
+const addFoodItems = async (params, body) => {
+  try {
+    const { fooditId } = params;
+    const { name, price, description, deliveryTime } = body;
+
+    const food = await Foodit.findById(fooditId);
+    const item = {
+      name: name,
+      price: price,
+      description: description,
+      deliveryTime: deliveryTime,
+    };
+
+    food.items.push(item);
+    await food.save();
+
+    return food;
+  } catch (error) {
+    return error;
+  }
+};
+
+/**
  * Update Food by id
  * @param {ObjectId} userId
  * @param {Object} updateBody
@@ -84,10 +112,30 @@ const deleteFood = async (params) => {
   }
 };
 
+/**
+ * Delete Food items by id
+ * @param {ObjectId} fooditId
+ * @param {ObjectId} itemId
+ */
+const deleteFoodItem = async (params, body) => {
+  try {
+    const { fooditId, itemId } = params;
+    const food = await Foodit.findById(fooditId);
+    // const index = food.items.findIndex((x) => x.id === itemId);
+    food.items.pull(itemId);
+    await food.save();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
 module.exports = {
   createFood,
+  addFoodItems,
   getFoods,
   updateFood,
   updateFoodItems,
+  deleteFoodItem,
   deleteFood,
 };
