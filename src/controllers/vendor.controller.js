@@ -14,7 +14,13 @@ const updateVendor = catchAsync(async (req, res) => {
   res.json({ user });
 });
 
+const getVendorServices = catchAsync(async (req, res) => {
+  const { foodServices, beautyServices, homeServices, gameServices } = await vendorService.getVendorServices(req.user.id);
+  res.json({ foodServices, beautyServices, homeServices, gameServices });
+});
+
 module.exports = {
   register,
   updateVendor,
+  getVendorServices,
 };

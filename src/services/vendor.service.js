@@ -4,6 +4,8 @@ const httpStatus = require('http-status');
 const config = require('../config/config');
 const ApiError = require('../utils/ApiError');
 const Vendor = require('../models/vendor.model');
+const { BeautyZone, HomeService, GameZone, Foodit } = require('../models');
+
 const paystack = require('paystack')(config.paystack);
 
 /**
@@ -89,10 +91,22 @@ const updateVendorPasswordByEmail = async (email, password) => {
   return Vendor.findOneAndUpdate({ email }, { $set: { password } }, { new: true });
 };
 
+const getVendorServices = async (vendorId) => {
+  try {
+    const foodServices = await Foodit.find({ vendorId }).select('items').exec();
+    const gameServices = await GameZone.find({ vendorId }).select('items').exec();
+    const homeServices = await HomeService.find({ vendorId }).select('items').exec();
+    const beautyServices = await BeautyZone.find({ vendorId }).select('items').exec();
+    return { foodServices, gameServices, homeServices, beautyServices };
+  } catch (error) {
+    return error;
+  }
+};
 module.exports = {
   createVendor,
   getVendorById,
   getVendorByEmail,
   updateVendorById,
   updateVendorPasswordByEmail,
+  getVendorServices,
 };
