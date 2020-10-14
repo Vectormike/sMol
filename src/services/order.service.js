@@ -23,6 +23,7 @@ const getVendorOrders = async (userId) => {
     .populate('cartId')
     .populate('transactionId')
     .populate('vendorId')
+    .populate('user')
     .exec();
   return orders;
 };
