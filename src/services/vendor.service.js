@@ -14,7 +14,7 @@ const paystack = require('paystack')(config.paystack);
  * @returns {Promise<User>}
  */
 const createVendor = async (vendorBody) => {
-  const { name, email, description, address, password, bank, accountNumber, businessName } = vendorBody;
+  const { name, email, description, address, password, bank, accountNumber, businessName, vendorType } = vendorBody;
   try {
     if (await Vendor.isEmailTaken(email)) {
       throw new Error();
@@ -32,6 +32,7 @@ const createVendor = async (vendorBody) => {
         description,
         address,
         password,
+        vendorType,
         bank,
         accountNumber,
         subaccountCode: subaccountResponse.data.subaccount_code,
@@ -70,6 +71,7 @@ const getVendorByEmail = async (email) => {
 const updateVendorById = async (vendorId, updateBody) => {
   try {
     const vendor = await getVendorById(vendorId);
+    // console.log(vendor);
     if (!vendor) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Vendor not found');
     }
@@ -79,6 +81,7 @@ const updateVendorById = async (vendorId, updateBody) => {
     // const subaccountUpdateResponse = await paystack.subaccount.update({
     //   percentage_charge: 0,
     // });
+    // console.log(updateBody);
     Object.assign(vendor, updateBody);
     await vendor.save();
     return vendor;

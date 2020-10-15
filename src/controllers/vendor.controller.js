@@ -10,8 +10,8 @@ const register = catchAsync(async (req, res) => {
 });
 
 const updateVendor = catchAsync(async (req, res) => {
-  const user = await vendorService.updateVendorById(req.params.userId, req.body);
-  res.json({ user });
+  const vendor = await vendorService.updateVendorById(req.params.vendorId, req.body);
+  res.json({ vendor });
 });
 
 const getVendorServices = catchAsync(async (req, res) => {
