@@ -12,3 +12,4 @@ module.exports.geolocationService = require('./geolocation.service');
 module.exports.cardService = require('./card.service');
 module.exports.cartService = require('./cart.service');
 module.exports.orderService = require('./order.service');
+module.exports.analyticsService = require('./analytics.service');

@@ -11,7 +11,9 @@ const gamezoneRoute = require('./gamezone.route');
 const cardRoute = require('./card.route');
 const cartRoute = require('./cart.route');
 const orderRoute = require('./order.route');
-const vendorRoute = require('./vendor.route')
+const vendorRoute = require('./vendor.route');
+const analyticsRoute = require('./analytics.route');
+
 const router = express.Router();
 
 router.use('/auth', authRoute);
@@ -27,5 +29,6 @@ router.use('/gamezone', gamezoneRoute);
 router.use('/cart', cartRoute);
 router.use('/card', cardRoute);
 router.use('/order', orderRoute);
+router.use('/analytics', analyticsRoute);
 
 module.exports = router;
