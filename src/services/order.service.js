@@ -240,6 +240,22 @@ const refundOrder = async (orderId) => {
   }
 };
 
+const acceptOrder = async (orderId) => {
+  try {
+    const orderDetails = await Order.findByIdAndUpdate(
+      orderId,
+      { shippingStatus: 'Accepted' },
+      {
+        useFindAndModify: false,
+        new: true,
+      }
+    );
+    return { orderDetails };
+  } catch (error) {
+    return error;
+  }
+};
+
 const shipOrder = async (orderId) => {
   try {
     const orderDetails = await Order.findByIdAndUpdate(
@@ -272,4 +288,13 @@ const deliverOrder = async (orderId) => {
   }
 };
 
-module.exports = { getAllOrders, getUserOrders, getVendorOrders, createOrder, refundOrder, shipOrder, deliverOrder };
+module.exports = {
+  getAllOrders,
+  getUserOrders,
+  getVendorOrders,
+  createOrder,
+  acceptOrder,
+  refundOrder,
+  shipOrder,
+  deliverOrder,
+};

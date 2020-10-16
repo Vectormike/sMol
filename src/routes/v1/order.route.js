@@ -8,7 +8,8 @@ router.route('/').get(orderController.getAllOrders);
 router.route('/user').get(auth('user'), orderController.getUserOrders);
 router.route('/vendor').get(auth('vendor'), orderController.getVendorOrders);
 router.route('/').post(auth('user'), orderController.createOrder);
-router.route('/:orderId').post(auth('user'), orderController.refundOrder);
-router.route('/:id').post(auth('vendor'), orderController.shipOrder);
+router.route('/:id').patch(auth('vendor'), orderController.shipOrder);
+router.route('/:id').patch(auth('vendor'), orderController.deliverOrder);
+router.route('/:orderId').post(auth('vendor'), orderController.refundOrder);
 
 module.exports = router;

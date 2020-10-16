@@ -22,9 +22,9 @@ const createOrder = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).json({ order });
 });
 
-const refundOrder = catchAsync(async (req, res) => {
-  const order = await orderService.refundOrder(req.params.orderId);
-  res.status(httpStatus.ACCEPTED).json({ order });
+const acceptOrder = catchAsync(async (req, res) => {
+  const order = await orderService.acceptOrder(req.params.id);
+  res.status(httpStatus.CREATED).json({ order });
 });
 
 const shipOrder = catchAsync(async (req, res) => {
@@ -32,9 +32,28 @@ const shipOrder = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).json({ order });
 });
 
+const deliverOrder = catchAsync(async (req, res) => {
+  const order = await orderService.deliverOrder(req.params.id);
+  res.status(httpStatus.CREATED).json({ order });
+});
+
+const refundOrder = catchAsync(async (req, res) => {
+  const order = await orderService.refundOrder(req.params.orderId);
+  res.status(httpStatus.ACCEPTED).json({ order });
+});
+
 // const deleteBeautyZone = catchAsync(async (req, res) => {
 //   await beautyzoneService.deleteBeautyZone(req.params);
 //   res.status(httpStatus.OK).end();
 // });
 
-module.exports = { getAllOrders, getUserOrders, getVendorOrders, createOrder, refundOrder, shipOrder };
+module.exports = {
+  getAllOrders,
+  getUserOrders,
+  getVendorOrders,
+  createOrder,
+  acceptOrder,
+  refundOrder,
+  shipOrder,
+  deliverOrder,
+};
