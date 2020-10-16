@@ -11,6 +11,7 @@ const analytics = catchAsync(async (req, res) => {
     shippedOrdersCount,
     deliveredOrdersCount,
     cancelledOrders,
+    earnings,
   } = await analyticsService.analytics(req.user.id);
   res.json({
     productCount,
@@ -20,6 +21,7 @@ const analytics = catchAsync(async (req, res) => {
     shippedOrdersCount,
     deliveredOrdersCount,
     cancelledOrders,
+    earnings,
   });
 });
 

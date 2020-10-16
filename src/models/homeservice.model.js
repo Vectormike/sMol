@@ -17,8 +17,16 @@ const homeServiceSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
     items: [
       {
+        isAvailable: {
+          type: Boolean,
+          default: true,
+        },
         category: String,
         name: String,
         image: String,

@@ -17,9 +17,17 @@ const beautyZone = mongoose.Schema(
       max: 5,
       default: 0,
     },
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
     items: [
       {
         category: String,
+        isAvailable: {
+          type: Boolean,
+          default: true,
+        },
         name: String,
         image: String,
         description: String,

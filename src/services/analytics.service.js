@@ -42,10 +42,16 @@ const analytics = async (vendorId) => {
     const shippedOrders = await Order.find({ vendorId }).where('shippingStatus').equals('Shipped').exec();
     const shippedOrdersCount = shippedOrders.length;
 
-    const deliveredOrders = await Order.find({ vendorId }).where('shippingStatus').equals('Delivered').exec();
+    const deliveredOrders = await Order.find({ vendorId: '5f7421d9525cc00022fe75cb' })
+      .where('shippingStatus')
+      .equals('Delivered')
+      .exec();
     const deliveredOrdersCount = deliveredOrders.length;
 
     const cancelledOrders = await Order.find({ vendorId }).where('shippingStatus').equals('Cancelled').exec();
+
+    const earnings = deliveredOrders.reduce((acc, currentValue) => acc + currentValue.totalAmount, 0);
+    console.log(earnings);
 
     return {
       productCount,
@@ -55,6 +61,7 @@ const analytics = async (vendorId) => {
       shippedOrdersCount,
       deliveredOrdersCount,
       cancelledOrders,
+      earnings,
     };
   } catch (error) {
     return error;

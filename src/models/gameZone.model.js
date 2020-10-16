@@ -17,8 +17,16 @@ const gamezone = mongoose.Schema(
       max: 5,
       default: 0,
     },
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
     items: [
       {
+        isAvailable: {
+          type: Boolean,
+          default: true,
+        },
         category: String,
         name: String,
         image: String,
