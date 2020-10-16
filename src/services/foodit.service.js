@@ -35,10 +35,11 @@ const createFood = async (foodBody) => {
 const addFoodItems = async (params, body) => {
   try {
     const { fooditId } = params;
-    const { name, price, description, deliveryTime, image } = body;
+    const { category, name, price, description, deliveryTime, image } = body;
 
     const food = await Foodit.findById(fooditId);
     const item = {
+      category: category,
       name: name,
       price: price,
       image: image,
@@ -85,12 +86,13 @@ const updateFood = async (userId, body) => {
 const updateFoodItems = async (params, body) => {
   try {
     const { fooditId, itemId } = params;
-    const { name, description, price, deliveryTime, image } = body;
+    const { category, name, description, price, deliveryTime, image } = body;
 
     await Foodit.updateOne(
       { _id: fooditId, 'items._id': itemId },
       {
         $set: {
+          'items.$.category': category,
           'items.$.name': name,
           'items.$.price': price,
           'items.$.description': description,

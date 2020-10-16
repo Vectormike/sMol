@@ -19,6 +19,7 @@ const homeServiceSchema = mongoose.Schema(
     },
     items: [
       {
+        category: String,
         name: String,
         image: String,
         description: String,

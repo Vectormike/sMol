@@ -19,6 +19,7 @@ const fooditSchema = mongoose.Schema(
     },
     items: [
       {
+        category: String,
         name: String,
         description: String,
         image: String,
