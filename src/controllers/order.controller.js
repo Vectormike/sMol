@@ -37,8 +37,8 @@ const deliverOrder = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).json({ order });
 });
 
-const refundOrder = catchAsync(async (req, res) => {
-  const order = await orderService.refundOrder(req.params.orderId);
+const cancelOrder = catchAsync(async (req, res) => {
+  const order = await orderService.cancelOrder(req.params.orderId);
   res.status(httpStatus.ACCEPTED).json({ order });
 });
 
@@ -53,7 +53,7 @@ module.exports = {
   getVendorOrders,
   createOrder,
   acceptOrder,
-  refundOrder,
+  cancelOrder,
   shipOrder,
   deliverOrder,
 };

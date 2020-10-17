@@ -10,6 +10,6 @@ router.route('/vendor').get(auth('vendor'), orderController.getVendorOrders);
 router.route('/').post(auth('user'), orderController.createOrder);
 router.route('/:id').patch(auth('vendor'), orderController.shipOrder);
 router.route('/:id').patch(auth('vendor'), orderController.deliverOrder);
-router.route('/:orderId').post(auth('vendor'), orderController.refundOrder);
+router.route('/:orderId').post(auth('vendor'), orderController.cancelOrder);
 
 module.exports = router;

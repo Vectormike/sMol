@@ -201,45 +201,6 @@ const createOrder = async (orderBody, userId) => {
   }
 };
 
-const refundOrder = async (orderId) => {
-  try {
-    const orderDetails = await Order.findById(orderId);
-    console.log(orderDetails);
-    if (!orderDetails) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
-    }
-
-    const data = JSON.stringify({
-      transaction: orderDetails.paymentId,
-    });
-
-    const config = {
-      method: 'post',
-      url: 'https://api.paystack.co/refund',
-      headers: {
-        Authorization: `Bearer ${confiG.paystack}`,
-        'Content-Type': 'application/json',
-      },
-      data,
-    };
-    const response = await axios(config);
-    if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Refund unsuccessful');
-    const transaction = await Transaction.findByIdAndUpdate(
-      orderDetails.transactionId,
-      { status: 'Refund' },
-      {
-        useFindAndModify: false,
-        new: true,
-      }
-    );
-    await Order.findByIdAndRemove(orderId, { useFindAndModify: false });
-    const refund = response.data;
-    return { refund, transaction };
-  } catch (error) {
-    return error;
-  }
-};
-
 const acceptOrder = async (orderId) => {
   try {
     const orderDetails = await Order.findByIdAndUpdate(
@@ -288,13 +249,59 @@ const deliverOrder = async (orderId) => {
   }
 };
 
+const cancelOrder = async (orderId) => {
+  try {
+    const orderDetails = await Order.findById(orderId);
+    // console.log(orderDetails);
+    if (!orderDetails) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+    }
+
+    const data = JSON.stringify({
+      transaction: orderDetails.paymentId,
+    });
+
+    const config = {
+      method: 'post',
+      url: 'https://api.paystack.co/refund',
+      headers: {
+        Authorization: `Bearer ${confiG.paystack}`,
+        'Content-Type': 'application/json',
+      },
+      data,
+    };
+    const response = await axios(config);
+    if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Refund unsuccessful');
+    const transaction = await Transaction.findByIdAndUpdate(
+      orderDetails.transactionId,
+      { status: 'Refund' },
+      {
+        useFindAndModify: false,
+        new: true,
+      }
+    );
+    await Order.findByIdAndUpdate(
+      orderId,
+      { shippingStatus: 'Cancelled' },
+      {
+        useFindAndModify: false,
+        new: true,
+      }
+    );
+    const refund = response.data;
+    return { refund, transaction };
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   getAllOrders,
   getUserOrders,
   getVendorOrders,
   createOrder,
   acceptOrder,
-  refundOrder,
+  cancelOrder,
   shipOrder,
   deliverOrder,
 };
