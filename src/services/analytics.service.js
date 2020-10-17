@@ -56,9 +56,13 @@ const analytics = async (vendorId) => {
     return {
       productCount,
       ordersCount,
+      newOrders,
       newOrdersCount,
+      acceptedOrders,
       acceptedOrdersCount,
+      shippedOrders,
       shippedOrdersCount,
+      deliveredOrders,
       deliveredOrdersCount,
       cancelledOrders,
       earnings,
