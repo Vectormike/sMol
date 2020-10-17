@@ -38,7 +38,7 @@ const deliverOrder = catchAsync(async (req, res) => {
 });
 
 const cancelOrder = catchAsync(async (req, res) => {
-  const order = await orderService.cancelOrder(req.params.orderId);
+  const order = await orderService.cancelOrder(req.params.id);
   res.status(httpStatus.ACCEPTED).json({ order });
 });
 
