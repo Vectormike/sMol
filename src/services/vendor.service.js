@@ -96,10 +96,10 @@ const updateVendorPasswordByEmail = async (email, password) => {
 
 const getVendorServices = async (vendorId) => {
   try {
-    const foodServices = await Foodit.find({ vendorId }).select('items').exec();
-    const gameServices = await GameZone.find({ vendorId }).select('items').exec();
-    const homeServices = await HomeService.find({ vendorId }).select('items').exec();
-    const beautyServices = await BeautyZone.find({ vendorId }).select('items').exec();
+    const foodServices = await Foodit.find({ vendorId }).exec();
+    const gameServices = await GameZone.find({ vendorId }).exec();
+    const homeServices = await HomeService.find({ vendorId }).exec();
+    const beautyServices = await BeautyZone.find({ vendorId }).exec();
     return { foodServices, gameServices, homeServices, beautyServices };
   } catch (error) {
     return error;
