@@ -280,7 +280,7 @@ const cancelOrder = async (orderId) => {
         new: true,
       }
     );
-    await Order.findByIdAndUpdate(
+    const newOrderDetails = await Order.findByIdAndUpdate(
       orderId,
       { shippingStatus: 'Cancelled' },
       {
@@ -289,7 +289,7 @@ const cancelOrder = async (orderId) => {
       }
     );
     const refund = response.data;
-    return { refund, transaction };
+    return { refund, newOrderDetails, transaction };
   } catch (error) {
     return error;
   }
