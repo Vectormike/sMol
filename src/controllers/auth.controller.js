@@ -15,15 +15,15 @@ const registerVendor = catchAsync(async (req, res) => {
 });
 
 const login = catchAsync(async (req, res) => {
-  const { email, password } = req.body;
-  const user = await authService.loginUserWithEmailAndPassword(email, password);
+  const { email, password, fcmToken } = req.body;
+  const user = await authService.loginUserWithEmailAndPassword(email, password, fcmToken);
   const tokens = await tokenService.generateAuthTokens(user);
   res.json({ user, tokens });
 });
 
 const loginVendor = catchAsync(async (req, res) => {
-  const { email, password } = req.body;
-  const vendor = await authService.loginVendorWithEmailAndPassword(email, password);
+  const { email, password, fcmToken } = req.body;
+  const vendor = await authService.loginVendorWithEmailAndPassword(email, password, fcmToken);
   const tokens = await tokenService.generateAuthTokens(vendor);
   res.json({ vendor, tokens });
 });

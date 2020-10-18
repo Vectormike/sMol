@@ -16,7 +16,8 @@ const logger = require('../config/logger');
  * @param {string} password
  * @returns {Promise<User>}
  */
-const loginUserWithEmailAndPassword = async (email, password) => {
+const loginUserWithEmailAndPassword = async (email, password, fcmToken) => {
+  await userService.saveUserFcmToken(email, fcmToken);
   const user = await userService.getUserByEmail(email);
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
@@ -30,7 +31,8 @@ const loginUserWithEmailAndPassword = async (email, password) => {
  * @param {string} password
  * @returns {Promise<User>}
  */
-const loginVendorWithEmailAndPassword = async (email, password) => {
+const loginVendorWithEmailAndPassword = async (email, password, fcmToken) => {
+  await vendorService.saveVendorFcmToken(email, fcmToken);
   const vendor = await vendorService.getVendorByEmail(email);
   if (!vendor || !(await vendor.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
