@@ -28,7 +28,7 @@ const login = {
   body: Joi.object().keys({
     email: Joi.string().required(),
     password: Joi.string().required(),
-    fcmToken: Joi.string().required(),
+    fcmToken: Joi.string(),
   }),
 };
 
@@ -36,7 +36,7 @@ const loginVendor = {
   body: Joi.object().keys({
     email: Joi.string().required(),
     password: Joi.string().required(),
-    fcmToken: Joi.string().required(),
+    fcmToken: Joi.string(),
   }),
 };
 
