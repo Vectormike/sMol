@@ -86,13 +86,14 @@ const updateFood = async (userId, body) => {
 const updateFoodItems = async (params, body) => {
   try {
     const { fooditId, itemId } = params;
-    const { category, name, description, price, deliveryTime, image } = body;
+    const { category, name, description, price, deliveryTime, image, isAvailable } = body;
 
     await Foodit.updateOne(
       { _id: fooditId, 'items._id': itemId },
       {
         $set: {
           'items.$.category': category,
+          'items.$.isAvailable': isAvailable,
           'items.$.name': name,
           'items.$.price': price,
           'items.$.description': description,
