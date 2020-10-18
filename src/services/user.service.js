@@ -73,6 +73,17 @@ const updateUserPasswordByEmail = async (email, password) => {
   return User.findOneAndUpdate({ email }, { $set: { password } }, { useFindAndModify: false }, { new: true });
 };
 
+/**
+ * Get user's fcmToken by email
+ * @param {string} fcmToken
+ * @returns {Promise<User>}
+ */
+const saveUserFcmToken = async (email, fcmToken) => {
+  const update = { fcmToken };
+  const user = await User.findOneAndUpdate({ email }, update, { new: true, useFindAndModify: false });
+  await user.save();
+};
+
 module.exports = {
   createUser,
   queryUsers,
@@ -80,4 +91,5 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   updateUserPasswordByEmail,
+  saveUserFcmToken,
 };

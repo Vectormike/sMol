@@ -105,6 +105,18 @@ const getVendorServices = async (vendorId) => {
     return error;
   }
 };
+
+/**
+ * Save vendor's fcmToken by email
+ * @param {string} fcmToken
+ * @returns {Promise<User>}
+ */
+const saveVendorFcmToken = async (email, fcmToken) => {
+  const update = { fcmToken };
+  const vendor = await Vendor.findOneAndUpdate({ email }, update, { new: true, useFindAndModify: false });
+  await vendor.save();
+};
+
 module.exports = {
   createVendor,
   getVendorById,
@@ -112,4 +124,5 @@ module.exports = {
   updateVendorById,
   updateVendorPasswordByEmail,
   getVendorServices,
+  saveVendorFcmToken,
 };
