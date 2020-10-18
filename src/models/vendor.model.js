@@ -35,6 +35,9 @@ const vendorSchema = mongoose.Schema(
     vendorType: {
       type: String,
     },
+    fcmToken: {
+      type: String,
+    },
     password: {
       type: String,
       required: true,

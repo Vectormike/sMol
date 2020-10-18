@@ -39,6 +39,9 @@ const userSchema = mongoose.Schema(
       trim: true,
       default: '',
     },
+    fcmToken: {
+      type: String,
+    },
     password: {
       type: String,
       required: true,
