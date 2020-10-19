@@ -5,6 +5,7 @@ const httpStatus = require('http-status');
 const crypto = require('crypto');
 const confiG = require('../config/config');
 const paystack = require('paystack')(confiG.paystack);
+const notificationService = require('../services/notification.service');
 const { Order, Transaction, User, Vendor, Cart } = require('../models');
 const ApiError = require('../utils/ApiError');
 
@@ -194,6 +195,12 @@ const createOrder = async (orderBody, userId) => {
           new: true,
         }
       );
+      const user = await User.findById(orderDetails.user);
+      const body = {
+        title: 'Order Completed!',
+        content: `Hey ${user.firstName}, thanks for using Servit.`,
+      };
+      await notificationService.sendNotificationToUser(body, orderDetails.user);
       return { updatedOrder, transaction };
     }
   } catch (error) {
@@ -211,6 +218,13 @@ const acceptOrder = async (orderId) => {
         new: true,
       }
     );
+
+    const user = await User.findById(orderDetails.user);
+    const body = {
+      title: 'Order has been accepted',
+      content: `Hello ${user.firstName}, your order has been accepted and will begin processing.`,
+    };
+    await notificationService.sendNotificationToUser(body, orderDetails.user);
     return { orderDetails };
   } catch (error) {
     return error;
@@ -227,6 +241,12 @@ const shipOrder = async (orderId) => {
         new: true,
       }
     );
+    const user = await User.findById(orderDetails.user);
+    const body = {
+      title: 'Order en route!',
+      content: `Hello ${user.firstName}, your order has just been shipped and will get to you soonest.`,
+    };
+    await notificationService.sendNotificationToUser(body, orderDetails.user);
     return { orderDetails };
   } catch (error) {
     return error;
@@ -243,6 +263,13 @@ const deliverOrder = async (orderId) => {
         new: true,
       }
     );
+    const user = await User.findById(orderDetails.user);
+    const body = {
+      title: 'Order Delivered',
+      content: `Yo ${user.firstName}, got your order? If not, contact us now.`,
+    };
+    await notificationService.sendNotificationToUser(body, orderDetails.user);
+
     return { orderDetails };
   } catch (error) {
     return error;
@@ -289,6 +316,13 @@ const cancelOrder = async (orderId) => {
       }
     );
     const refund = response.data;
+
+    const user = await User.findById(orderDetails.user);
+    const body = {
+      title: 'Order Cancelled',
+      content: `Yo ${user.firstName}, we just cancelled your order.`,
+    };
+    await notificationService.sendNotificationToUser(body, orderDetails.user);
     return { refund, newOrderDetails, transaction };
   } catch (error) {
     return error;

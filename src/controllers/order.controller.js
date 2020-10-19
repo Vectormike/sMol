@@ -23,8 +23,8 @@ const createOrder = catchAsync(async (req, res) => {
 });
 
 const acceptOrder = catchAsync(async (req, res) => {
-  const order = await orderService.acceptOrder(req.params.id);
-  res.status(httpStatus.CREATED).json({ order });
+  const { orderDetails } = await orderService.acceptOrder(req.params.id);
+  res.status(httpStatus.CREATED).json({ orderDetails });
 });
 
 const shipOrder = catchAsync(async (req, res) => {

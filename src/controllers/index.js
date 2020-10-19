@@ -6,3 +6,4 @@ module.exports.beautyzoneController = require('./beautyzone.controller');
 module.exports.geolocationController = require('./geolocation.controller');
 module.exports.cardController = require('./card.controller');
 module.exports.analyticsController = require('./analytics.controller');
+// module.exports.notificationController = require('./notification.controller');
