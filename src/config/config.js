@@ -60,4 +60,5 @@ module.exports = {
   cloudinaryKey: envVars.CLOUDINARY_API_KEY,
   cloudinarySecret: envVars.CLOUDINARY_API_SECRET,
   paystack: envVars.PAYSTACK,
+  applicationCredential: envVars.GOOGLE_APPLICATION_CREDENTIALS,
 };

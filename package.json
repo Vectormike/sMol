@@ -50,6 +50,7 @@
     "express": "^4.17.1",
     "express-mongo-sanitize": "^2.0.0",
     "express-rate-limit": "^5.0.0",
+    "firebase-admin": "^9.2.0",
     "form-data": "^3.0.0",
     "googlemaps": "^1.12.0",
     "helmet": "^3.21.2",
