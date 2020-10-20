@@ -200,7 +200,7 @@ const createOrder = async (orderBody, userId) => {
         title: 'Order Completed!',
         content: `Hey ${user.firstName}, thanks for using Servit.`,
       };
-      await notificationService.sendNotificationToUser(body, orderDetails.user);
+      notificationService.sendNotificationToUser(body, orderDetails.user);
       return { updatedOrder, transaction };
     }
   } catch (error) {
@@ -224,7 +224,7 @@ const acceptOrder = async (orderId) => {
       title: 'Order has been accepted',
       content: `Hello ${user.firstName}, your order has been accepted and will begin processing.`,
     };
-    await notificationService.sendNotificationToUser(body, orderDetails.user);
+    notificationService.sendNotificationToUser(body, orderDetails.user);
     return { orderDetails };
   } catch (error) {
     return error;
@@ -246,7 +246,7 @@ const shipOrder = async (orderId) => {
       title: 'Order en route!',
       content: `Hello ${user.firstName}, your order has just been shipped and will get to you soonest.`,
     };
-    await notificationService.sendNotificationToUser(body, orderDetails.user);
+    notificationService.sendNotificationToUser(body, orderDetails.user);
     return { orderDetails };
   } catch (error) {
     return error;
@@ -268,8 +268,7 @@ const deliverOrder = async (orderId) => {
       title: 'Order Delivered',
       content: `Yo ${user.firstName}, got your order? If not, contact us now.`,
     };
-    await notificationService.sendNotificationToUser(body, orderDetails.user);
-
+    notificationService.sendNotificationToUser(body, orderDetails.user);
     return { orderDetails };
   } catch (error) {
     return error;
@@ -322,7 +321,7 @@ const cancelOrder = async (orderId) => {
       title: 'Order Cancelled',
       content: `Yo ${user.firstName}, we just cancelled your order.`,
     };
-    await notificationService.sendNotificationToUser(body, orderDetails.user);
+    notificationService.sendNotificationToUser(body, orderDetails.user);
     return { refund, newOrderDetails, transaction };
   } catch (error) {
     return error;
