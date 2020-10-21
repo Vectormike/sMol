@@ -52,6 +52,8 @@ module.exports = {
         pass: envVars.SMTP_PASSWORD,
       },
     },
+    debug: true,
+    logger: true,
     from: envVars.EMAIL_FROM,
   },
   rapidApi: envVars.RAPID_KEY,
