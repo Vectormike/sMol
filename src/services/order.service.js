@@ -174,6 +174,7 @@ const createOrder = async (orderBody, userId) => {
           cartId: orderBody.cartId,
           vendorId: orderBody.vendorId,
           shippingAddress: orderBody.shippingAddress,
+          user: userId,
           shippingStatus: 'Pending',
           totalAmount: cartDetails.totalAmount,
           items: cartDetails.items,
