@@ -70,7 +70,7 @@ const createOrder = async (orderBody, userId) => {
           user: userId,
           shippingAddress: orderBody.shippingAddress,
           shippingStatus: 'Pending',
-          totalAmount,
+          totalAmount: cartDetails.totalAmount,
           items: cartDetails.items,
           paymentId: reference,
         });
@@ -90,7 +90,7 @@ const createOrder = async (orderBody, userId) => {
         vendorId: orderBody.vendorId,
         shippingAddress: userDetails.homeAddress,
         shippingStatus: 'Pending',
-        totalAmount,
+        totalAmount: cartDetails.totalAmount,
         items: cartDetails.items,
         paymentId: reference,
       });
@@ -148,7 +148,7 @@ const createOrder = async (orderBody, userId) => {
           vendorId: orderBody.vendorId,
           shippingAddress: orderBody.shippingAddress,
           shippingStatus: 'Pending',
-          totalAmount,
+          totalAmount: cartDetails.totalAmount,
           items: cartDetails.items,
           paymentId: reference,
         });
@@ -182,7 +182,7 @@ const createOrder = async (orderBody, userId) => {
         paymentId: reference,
         shippingAddress: userDetails.homeAddress,
         shippingStatus: 'Pending',
-        totalAmount,
+        totalAmount: cartDetails.totalAmount,
         items: orderBody.items,
       });
       const transaction = await Transaction.create({
