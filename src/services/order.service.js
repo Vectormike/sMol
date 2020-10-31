@@ -37,6 +37,7 @@ const createOrder = async (orderBody, userId) => {
     const cartDetails = await Cart.findById(orderBody.cartId);
     const totalAmount = cartDetails.totalAmount * 100;
 
+    // For items more than N1000, add default subcharge
     if (cartDetails.totalAmount >= 1000) {
       const data = JSON.stringify({
         email: userDetails.email,
@@ -63,6 +64,8 @@ const createOrder = async (orderBody, userId) => {
       };
       const response = await axios(config);
       if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Payment unsuccessful');
+
+      // Shipping address provided just when about to make payment
       if (orderBody.shippingAddress) {
         const order = await Order.create({
           cartId: orderBody.cartId,
@@ -82,8 +85,24 @@ const createOrder = async (orderBody, userId) => {
           shipToFriend: orderBody.shipToFriend,
           paymentType: 'Card',
         });
-        return { order, transaction };
+        const updatedOrder = await Order.findByIdAndUpdate(
+          order.id,
+          { transactionId: transaction.id },
+          {
+            useFindAndModify: false,
+            new: true,
+          }
+        );
+        const user = await User.findById(order.user);
+        const body = {
+          title: 'Order Completed!',
+          content: `Hey ${user.firstName}, thanks for using Servit.`,
+        };
+        notificationService.sendNotificationToUser(body, order.user);
+        return { updatedOrder, transaction };
       }
+
+      // Shipping address from user details
       const order = await Order.create({
         cartId: orderBody.cartId,
         user: userId,
@@ -110,8 +129,16 @@ const createOrder = async (orderBody, userId) => {
           new: true,
         }
       );
+      const user = await User.findById(order.user);
+      const body = {
+        title: 'Order Completed!',
+        content: `Hey ${user.firstName}, thanks for using Servit.`,
+      };
+      notificationService.sendNotificationToUser(body, order.user);
       return { updatedOrder, transaction };
     }
+
+    // For items less than N1000, remove subcharge
     if (cartDetails.totalAmount < 1000) {
       const updateSubaccountResponse = await paystack.subaccount.update('ACCT_stzudtgqm66bp0z', {
         percentage_charge: 0,
