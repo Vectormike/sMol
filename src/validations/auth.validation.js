@@ -21,6 +21,7 @@ const registerVendor = {
     businessName: Joi.string().required(),
     bank: Joi.string().required(),
     accountNumber: Joi.string().required(),
+    vendorType: Joi.string().required(),
   }),
 };
 
