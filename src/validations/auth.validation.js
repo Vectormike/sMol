@@ -8,6 +8,7 @@ const register = {
     email: Joi.string().required().email(),
     phoneNumber: Joi.string().required(),
     password: Joi.string().required().custom(password),
+    fcmToken: Joi.string(),
   }),
 };
 
@@ -22,6 +23,7 @@ const registerVendor = {
     bank: Joi.string().required(),
     accountNumber: Joi.string().required(),
     vendorType: Joi.string().required(),
+    fcmToken: Joi.string(),
   }),
 };
 
