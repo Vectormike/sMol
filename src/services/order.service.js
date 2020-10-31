@@ -141,7 +141,7 @@ const createOrder = async (orderBody, userId) => {
         data,
       };
       const response = await axios(config);
-      if (!response) throw new Error();
+      if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Payment unsuccessful');
       if (orderBody.shippingAddress) {
         const order = await Order.create({
           cartId: orderBody.cartId,
@@ -157,7 +157,6 @@ const createOrder = async (orderBody, userId) => {
           status: 'Paid',
           paymentId: reference,
           shippingAddress: orderBody.shippingAddress,
-          shipToFriend: orderBody.shipToFriend,
           paymentType: 'Card',
         });
         const updatedOrder = await Order.findByIdAndUpdate(
@@ -168,6 +167,12 @@ const createOrder = async (orderBody, userId) => {
             new: true,
           }
         );
+        const user = await User.findById(order.user);
+        const body = {
+          title: 'Order Completed!',
+          content: `Hey ${user.firstName}, thanks for using Servit.`,
+        };
+        notificationService.sendNotificationToUser(body, order.user);
         return { updatedOrder, transaction };
       }
       const order = await Order.create({
@@ -195,16 +200,17 @@ const createOrder = async (orderBody, userId) => {
           new: true,
         }
       );
-      const user = await User.findById(orderDetails.user);
+      const user = await User.findById(order.user);
       const body = {
         title: 'Order Completed!',
         content: `Hey ${user.firstName}, thanks for using Servit.`,
       };
-      notificationService.sendNotificationToUser(body, orderDetails.user);
+      notificationService.sendNotificationToUser(body, order.user);
       return { updatedOrder, transaction };
     }
   } catch (error) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Unable to make order');
+    console.error(error);
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Order not made!');
   }
 };
 
