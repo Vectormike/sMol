@@ -12,8 +12,8 @@ const getCard = catchAsync(async (req, res) => {
   res.json({ card });
 });
 
-const createCard = catchAsync(async (req, res) => {
-  const card = await cardService.createCard({ ...req.body, user: req.user.id });
+const saveCard = catchAsync(async (req, res) => {
+  const card = await cardService.saveCard({ ...req.body, user: req.user.id });
   res.json({ card });
 });
 
@@ -22,4 +22,4 @@ const deleteCard = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).end();
 });
 
-module.exports = { getCard, getAllCards, createCard, deleteCard };
+module.exports = { getCard, getAllCards, saveCard, deleteCard };
