@@ -26,10 +26,10 @@ const saveCard = async (cardDetails) => {
       amount: 50 * 100,
       reference,
       card: {
-        cvv: cardDetails.card.cvv,
-        number: cardDetails.card.number,
-        expiry_month: cardDetails.card.expMonth,
-        expiry_year: cardDetails.card.expYear,
+        cvv: cardDetails.cvv,
+        number: cardDetails.number,
+        expiry_month: cardDetails.expiry_month,
+        expiry_year: cardDetails.expiry_year,
       },
       pin: cardDetails.pin,
     });
