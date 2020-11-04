@@ -39,6 +39,10 @@ const cardSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    signature: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
