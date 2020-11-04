@@ -5,8 +5,9 @@ const httpStatus = require('http-status');
 const crypto = require('crypto');
 const confiG = require('../config/config');
 const paystack = require('paystack')(confiG.paystack);
+const {} = require('./card.service');
 const notificationService = require('../services/notification.service');
-const { Order, Transaction, User, Vendor, Cart } = require('../models');
+const { Order, Transaction, User, Vendor, Cart, Card } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const getAllOrders = async () => {
@@ -35,27 +36,22 @@ const createOrder = async (orderBody, userId) => {
     const userDetails = await User.findById(userId);
     const vendorDetails = await Vendor.findById(orderBody.vendorId);
     const cartDetails = await Cart.findById(orderBody.cartId);
+    const cardDetails = await Card.findOne({ user: userId });
     const totalAmount = cartDetails.totalAmount * 100;
 
     // For items more than N1000, add default subcharge
     if (cartDetails.totalAmount >= 1000) {
       const data = JSON.stringify({
-        email: userDetails.email,
+        email: cardDetails.email,
         amount: totalAmount,
         reference,
         subaccount: vendorDetails.subaccountCode,
-        card: {
-          cvv: orderBody.card.cvv,
-          number: orderBody.card.number,
-          expiry_month: orderBody.card.expiryMonth,
-          expiry_year: orderBody.card.expiryYear,
-        },
-        pin: orderBody.pin,
+        authorization_code: cardDetails.authorizationCode,
       });
 
       const config = {
         method: 'post',
-        url: 'https://api.paystack.co/charge',
+        url: 'https://api.paystack.co/transaction/charge_authorization',
         headers: {
           Authorization: `Bearer ${confiG.paystack}`,
           'Content-Type': 'application/json',
@@ -145,22 +141,16 @@ const createOrder = async (orderBody, userId) => {
       });
       if (!updateSubaccountResponse) throw new Error();
       const data = JSON.stringify({
-        email: userDetails.email,
+        email: cardDetails.email,
         amount: totalAmount,
         reference,
         subaccount: vendorDetails.subaccountCode,
-        card: {
-          cvv: orderBody.card.cvv,
-          number: orderBody.card.number,
-          expiry_month: orderBody.card.expiryMonth,
-          expiry_year: orderBody.card.expiryYear,
-        },
-        pin: orderBody.card.pin,
+        authorization_code: cardDetails.authorizationCode,
       });
 
       const config = {
         method: 'post',
-        url: 'https://api.paystack.co/charge',
+        url: 'https://api.paystack.co/transaction/charge_authorization',
         headers: {
           Authorization: `Bearer ${confiG.paystack}`,
           'Content-Type': 'application/json',
@@ -169,6 +159,7 @@ const createOrder = async (orderBody, userId) => {
       };
       const response = await axios(config);
       if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Payment unsuccessful');
+
       if (orderBody.shippingAddress) {
         const order = await Order.create({
           cartId: orderBody.cartId,

@@ -17,24 +17,24 @@ const getCard = async (id) => {
 
 const saveCard = async (cardDetails) => {
   try {
-    console.log(cardDetails);
+    // console.log(cardDetails);
     const reference = crypto.randomBytes(3).toString('hex');
 
-    const data = JSON.stringify({
+    // Charge card and get authorization code
+    let data = JSON.stringify({
       email: cardDetails.email,
-      amount: 50,
+      amount: 50 * 100,
       reference,
-      // subaccount: vendorDetails.subaccountCode,
       card: {
-        cvv: '408',
-        number: '4084084084084081',
-        expiry_month: '12',
-        expiry_year: '21',
+        cvv: cardDetails.card.cvv,
+        number: cardDetails.card.number,
+        expiry_month: cardDetails.card.expMonth,
+        expiry_year: cardDetails.card.expYear,
       },
-      pin: '1234',
+      pin: cardDetails.pin,
     });
 
-    const config = {
+    let config = {
       method: 'post',
       url: 'https://api.paystack.co/charge',
       headers: {
@@ -45,6 +45,27 @@ const saveCard = async (cardDetails) => {
     };
     const response = await axios(config);
     // console.log(response.data);
+
+    //Refund the value back to user after verification
+    if (response.data.message === 'Charge attempted') {
+      data = JSON.stringify({
+        amount: 50 * 100,
+        transaction: reference,
+      });
+
+      config = {
+        method: 'post',
+        url: 'https://api.paystack.co/refund',
+        headers: {
+          Authorization: `Bearer ${confiG.paystack}`,
+          'Content-Type': 'application/json',
+        },
+        data,
+      };
+      const res = await axios(config);
+      // console.log(res);
+    }
+
     const {
       authorization_code,
       card_type,
@@ -56,25 +77,33 @@ const saveCard = async (cardDetails) => {
       signature,
     } = response.data.data.authorization;
 
-    if (response.data.message === 'Charge attempted') {
-      const card = await Card.create({
-        user: cardDetails.user,
-        email: cardDetails.email,
-        authorizationCode: authorization_code,
-        bin,
-        last4,
-        expMonth: exp_month,
-        expYear: exp_year,
-        cardType: card_type,
-        signature,
-        bank,
-      });
+    //Check if card is already saved
+    const cardExist = await Card.findOne({ signature: signature });
 
-      console.log(card);
+    if (!cardExist) {
+      if (response.data.message === 'Charge attempted') {
+        const card = await Card.create({
+          user: cardDetails.user,
+          email: cardDetails.email,
+          authorizationCode: authorization_code,
+          bin,
+          last4,
+          expMonth: exp_month,
+          expYear: exp_year,
+          cardType: card_type,
+          signature,
+          bank,
+        });
+
+        // console.log(card);
+        return card;
+      }
+    } else {
+      throw new Error('Card is already saved!');
     }
   } catch (error) {
-    console.error(error);
-    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Unable to save card!');
+    console.error(error.message);
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
   }
 };
 
