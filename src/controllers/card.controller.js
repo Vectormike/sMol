@@ -13,7 +13,8 @@ const getCard = catchAsync(async (req, res) => {
 });
 
 const saveCard = catchAsync(async (req, res) => {
-  const card = await cardService.saveCard({ ...req.body, user: req.user.id });
+  console.log(req.body);
+  const card = await cardService.saveCard({ ...req.body, user: req.user.id, email: req.user.email });
   res.json({ card });
 });
 

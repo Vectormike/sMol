@@ -42,7 +42,7 @@ const createOrder = async (orderBody, userId) => {
     // For items more than N1000, add default subcharge
     if (cartDetails.totalAmount >= 1000) {
       const data = JSON.stringify({
-        email: cardDetails.email,
+        email: userDetails.email,
         amount: totalAmount,
         reference,
         subaccount: vendorDetails.subaccountCode,
@@ -141,7 +141,7 @@ const createOrder = async (orderBody, userId) => {
       });
       if (!updateSubaccountResponse) throw new Error();
       const data = JSON.stringify({
-        email: cardDetails.email,
+        email: userDetails.email,
         amount: totalAmount,
         reference,
         subaccount: vendorDetails.subaccountCode,

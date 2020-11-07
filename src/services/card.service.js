@@ -17,7 +17,7 @@ const getCard = async (id) => {
 
 const saveCard = async (cardDetails) => {
   try {
-    // console.log(cardDetails);
+    console.log(cardDetails);
     const reference = crypto.randomBytes(3).toString('hex');
 
     // Charge card and get authorization code
@@ -102,6 +102,7 @@ const saveCard = async (cardDetails) => {
       throw new Error('Card is already saved!');
     }
   } catch (error) {
+    console.log(error);
     console.error(error.message);
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
   }
