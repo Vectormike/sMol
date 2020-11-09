@@ -39,35 +39,75 @@ const createOrder = async (orderBody, userId) => {
     const cardDetails = await Card.findOne({ user: userId });
     const totalAmount = cartDetails.totalAmount * 100;
 
-    // For items more than N1000, add default subcharge
-    if (cartDetails.totalAmount >= 1000) {
-      const data = JSON.stringify({
-        email: cardDetails.email,
-        amount: totalAmount,
-        reference,
-        subaccount: vendorDetails.subaccountCode,
-        authorization_code: cardDetails.authorizationCode,
-      });
+    // console.log(orderBody);
+    // console.log(cardDetails, 'Here');
+    // Use user's saved card
+    if (cardDetails) {
+      // For items more than N1000, add default subcharge
+      if (cartDetails.totalAmount >= 1000) {
+        const data = JSON.stringify({
+          email: cardDetails.email,
+          amount: totalAmount,
+          reference,
+          subaccount: vendorDetails.subaccountCode,
+          authorization_code: cardDetails.authorizationCode,
+        });
 
-      const config = {
-        method: 'post',
-        url: 'https://api.paystack.co/transaction/charge_authorization',
-        headers: {
-          Authorization: `Bearer ${confiG.paystack}`,
-          'Content-Type': 'application/json',
-        },
-        data,
-      };
-      const response = await axios(config);
-      if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Payment unsuccessful');
+        const config = {
+          method: 'post',
+          url: 'https://api.paystack.co/transaction/charge_authorization',
+          headers: {
+            Authorization: `Bearer ${confiG.paystack}`,
+            'Content-Type': 'application/json',
+          },
+          data,
+        };
+        const response = await axios(config);
+        if (!response) throw new Error();
 
-      // Shipping address provided just when about to make payment
-      if (orderBody.shippingAddress) {
+        // Shipping address provided just when about to make payment
+        if (orderBody.shippingAddress) {
+          const order = await Order.create({
+            cartId: orderBody.cartId,
+            vendorId: orderBody.vendorId,
+            user: userId,
+            shippingAddress: orderBody.shippingAddress,
+            shippingStatus: 'Pending',
+            totalAmount: cartDetails.totalAmount,
+            items: cartDetails.items,
+            paymentId: reference,
+          });
+          const transaction = await Transaction.create({
+            orderId: order.id,
+            status: 'Paid',
+            paymentId: reference,
+            shippingAddress: orderBody.shippingAddress,
+            shipToFriend: orderBody.shipToFriend,
+            paymentType: 'Card',
+          });
+          const updatedOrder = await Order.findByIdAndUpdate(
+            order.id,
+            { transactionId: transaction.id },
+            {
+              useFindAndModify: false,
+              new: true,
+            }
+          );
+          const user = await User.findById(order.user);
+          const body = {
+            title: 'Order Completed!',
+            content: `Hey ${user.firstName}, thanks for using Servit.`,
+          };
+          notificationService.sendNotificationToUser(body, order.user);
+          return { updatedOrder, transaction };
+        }
+
+        // Shipping address from user details
         const order = await Order.create({
           cartId: orderBody.cartId,
-          vendorId: orderBody.vendorId,
           user: userId,
-          shippingAddress: orderBody.shippingAddress,
+          vendorId: orderBody.vendorId,
+          shippingAddress: userDetails.homeAddress,
           shippingStatus: 'Pending',
           totalAmount: cartDetails.totalAmount,
           items: cartDetails.items,
@@ -77,7 +117,7 @@ const createOrder = async (orderBody, userId) => {
           orderId: order.id,
           status: 'Paid',
           paymentId: reference,
-          shippingAddress: orderBody.shippingAddress,
+          shippingAddress: userDetails.homeAddress,
           shipToFriend: orderBody.shipToFriend,
           paymentType: 'Card',
         });
@@ -98,84 +138,81 @@ const createOrder = async (orderBody, userId) => {
         return { updatedOrder, transaction };
       }
 
-      // Shipping address from user details
-      const order = await Order.create({
-        cartId: orderBody.cartId,
-        user: userId,
-        vendorId: orderBody.vendorId,
-        shippingAddress: userDetails.homeAddress,
-        shippingStatus: 'Pending',
-        totalAmount: cartDetails.totalAmount,
-        items: cartDetails.items,
-        paymentId: reference,
-      });
-      const transaction = await Transaction.create({
-        orderId: order.id,
-        status: 'Paid',
-        paymentId: reference,
-        shippingAddress: userDetails.homeAddress,
-        shipToFriend: orderBody.shipToFriend,
-        paymentType: 'Card',
-      });
-      const updatedOrder = await Order.findByIdAndUpdate(
-        order.id,
-        { transactionId: transaction.id },
-        {
-          useFindAndModify: false,
-          new: true,
+      // For items less than N1000, remove subcharge
+      if (cartDetails.totalAmount < 1000) {
+        const updateSubaccountResponse = await paystack.subaccount.update('ACCT_stzudtgqm66bp0z', {
+          percentage_charge: 0,
+        });
+        if (!updateSubaccountResponse) throw new Error();
+        const data = JSON.stringify({
+          email: cardDetails.email,
+          amount: totalAmount,
+          reference,
+          subaccount: vendorDetails.subaccountCode,
+          authorization_code: cardDetails.authorizationCode,
+        });
+
+        const config = {
+          method: 'post',
+          url: 'https://api.paystack.co/transaction/charge_authorization',
+          headers: {
+            Authorization: `Bearer ${confiG.paystack}`,
+            'Content-Type': 'application/json',
+          },
+          data,
+        };
+        const response = await axios(config);
+        if (!response) throw new Error();
+
+        if (orderBody.shippingAddress) {
+          const order = await Order.create({
+            cartId: orderBody.cartId,
+            vendorId: orderBody.vendorId,
+            shippingAddress: orderBody.shippingAddress,
+            user: userId,
+            shippingStatus: 'Pending',
+            totalAmount: cartDetails.totalAmount,
+            items: cartDetails.items,
+            paymentId: reference,
+          });
+          const transaction = await Transaction.create({
+            orderId: order.id,
+            status: 'Paid',
+            paymentId: reference,
+            shippingAddress: orderBody.shippingAddress,
+            paymentType: 'Card',
+          });
+          const updatedOrder = await Order.findByIdAndUpdate(
+            order.id,
+            { transactionId: transaction.id },
+            {
+              useFindAndModify: false,
+              new: true,
+            }
+          );
+          const user = await User.findById(order.user);
+          const body = {
+            title: 'Order Completed!',
+            content: `Hey ${user.firstName}, thanks for using Servit.`,
+          };
+          notificationService.sendNotificationToUser(body, order.user);
+          return { updatedOrder, transaction };
         }
-      );
-      const user = await User.findById(order.user);
-      const body = {
-        title: 'Order Completed!',
-        content: `Hey ${user.firstName}, thanks for using Servit.`,
-      };
-      notificationService.sendNotificationToUser(body, order.user);
-      return { updatedOrder, transaction };
-    }
-
-    // For items less than N1000, remove subcharge
-    if (cartDetails.totalAmount < 1000) {
-      const updateSubaccountResponse = await paystack.subaccount.update('ACCT_stzudtgqm66bp0z', {
-        percentage_charge: 0,
-      });
-      if (!updateSubaccountResponse) throw new Error();
-      const data = JSON.stringify({
-        email: cardDetails.email,
-        amount: totalAmount,
-        reference,
-        subaccount: vendorDetails.subaccountCode,
-        authorization_code: cardDetails.authorizationCode,
-      });
-
-      const config = {
-        method: 'post',
-        url: 'https://api.paystack.co/transaction/charge_authorization',
-        headers: {
-          Authorization: `Bearer ${confiG.paystack}`,
-          'Content-Type': 'application/json',
-        },
-        data,
-      };
-      const response = await axios(config);
-      if (!response) throw new ApiError(httpStatus.BAD_REQUEST, 'Payment unsuccessful');
-
-      if (orderBody.shippingAddress) {
         const order = await Order.create({
           cartId: orderBody.cartId,
-          vendorId: orderBody.vendorId,
-          shippingAddress: orderBody.shippingAddress,
           user: userId,
+          vendorId: orderBody.vendorId,
+          paymentId: reference,
+          shippingAddress: userDetails.homeAddress,
           shippingStatus: 'Pending',
           totalAmount: cartDetails.totalAmount,
-          items: cartDetails.items,
-          paymentId: reference,
+          items: orderBody.items,
         });
         const transaction = await Transaction.create({
           orderId: order.id,
           status: 'Paid',
           paymentId: reference,
-          shippingAddress: orderBody.shippingAddress,
+          shippingAddress: userDetails.homeAddress,
           paymentType: 'Card',
         });
         const updatedOrder = await Order.findByIdAndUpdate(
@@ -194,41 +231,181 @@ const createOrder = async (orderBody, userId) => {
         notificationService.sendNotificationToUser(body, order.user);
         return { updatedOrder, transaction };
       }
-      const order = await Order.create({
-        cartId: orderBody.cartId,
-        user: userId,
-        vendorId: orderBody.vendorId,
-        paymentId: reference,
-        shippingAddress: userDetails.homeAddress,
-        shippingStatus: 'Pending',
-        totalAmount: cartDetails.totalAmount,
-        items: orderBody.items,
-      });
-      const transaction = await Transaction.create({
-        orderId: order.id,
-        status: 'Paid',
-        paymentId: reference,
-        shippingAddress: userDetails.homeAddress,
-        paymentType: 'Card',
-      });
-      const updatedOrder = await Order.findByIdAndUpdate(
-        order.id,
-        { transactionId: transaction.id },
-        {
-          useFindAndModify: false,
-          new: true,
+    } else {
+      if (cartDetails.totalAmount >= 1000) {
+        const data = JSON.stringify({
+          email: userDetails.email,
+          amount: totalAmount,
+          reference,
+          subaccount: vendorDetails.subaccountCode,
+          card: {
+            cvv: orderBody.card.cvv,
+            number: orderBody.card.number,
+            expiry_month: orderBody.card.expiryMonth,
+            expiry_year: orderBody.card.expiryYear,
+          },
+          pin: orderBody.pin,
+        });
+
+        const config = {
+          method: 'post',
+          url: 'https://api.paystack.co/charge',
+          headers: {
+            Authorization: `Bearer ${confiG.paystack}`,
+            'Content-Type': 'application/json',
+          },
+          data,
+        };
+        const response = await axios(config);
+        if (!response) throw new Error();
+        if (orderBody.shippingAddress) {
+          const order = await Order.create({
+            cartId: orderBody.cartId,
+            vendorId: orderBody.vendorId,
+            user: userId,
+            shippingAddress: orderBody.shippingAddress,
+            shippingStatus: 'Pending',
+            totalAmount,
+            items: cartDetails.items,
+            paymentId: reference,
+          });
+          const transaction = await Transaction.create({
+            orderId: order.id,
+            status: 'Paid',
+            paymentId: reference,
+            shippingAddress: orderBody.shippingAddress,
+            shipToFriend: orderBody.shipToFriend,
+            paymentType: 'Card',
+          });
+          return { order, transaction };
         }
-      );
-      const user = await User.findById(order.user);
-      const body = {
-        title: 'Order Completed!',
-        content: `Hey ${user.firstName}, thanks for using Servit.`,
-      };
-      notificationService.sendNotificationToUser(body, order.user);
-      return { updatedOrder, transaction };
+        const order = await Order.create({
+          cartId: orderBody.cartId,
+          user: userId,
+          vendorId: orderBody.vendorId,
+          shippingAddress: userDetails.homeAddress,
+          shippingStatus: 'Pending',
+          totalAmount,
+          items: cartDetails.items,
+          paymentId: reference,
+        });
+        const transaction = await Transaction.create({
+          orderId: order.id,
+          status: 'Paid',
+          paymentId: reference,
+          shippingAddress: userDetails.homeAddress,
+          shipToFriend: orderBody.shipToFriend,
+          paymentType: 'Card',
+        });
+        const updatedOrder = await Order.findByIdAndUpdate(
+          order.id,
+          { transactionId: transaction.id },
+          {
+            useFindAndModify: false,
+            new: true,
+          }
+        );
+        return { updatedOrder, transaction };
+      }
+      if (cartDetails.totalAmount < 1000) {
+        const updateSubaccountResponse = await paystack.subaccount.update('ACCT_stzudtgqm66bp0z', {
+          percentage_charge: 0,
+        });
+        if (!updateSubaccountResponse) throw new Error();
+        const data = JSON.stringify({
+          email: userDetails.email,
+          amount: totalAmount,
+          reference,
+          subaccount: vendorDetails.subaccountCode,
+          card: {
+            cvv: orderBody.card.cvv,
+            number: orderBody.card.number,
+            expiry_month: orderBody.card.expiryMonth,
+            expiry_year: orderBody.card.expiryYear,
+          },
+          pin: orderBody.card.pin,
+        });
+
+        const config = {
+          method: 'post',
+          url: 'https://api.paystack.co/charge',
+          headers: {
+            Authorization: `Bearer ${confiG.paystack}`,
+            'Content-Type': 'application/json',
+          },
+          data,
+        };
+        const response = await axios(config);
+        if (!response) throw new Error();
+        if (orderBody.shippingAddress) {
+          const order = await Order.create({
+            cartId: orderBody.cartId,
+            vendorId: orderBody.vendorId,
+            shippingAddress: orderBody.shippingAddress,
+            shippingStatus: 'Pending',
+            totalAmount,
+            items: cartDetails.items,
+            paymentId: reference,
+          });
+          const transaction = await Transaction.create({
+            orderId: order.id,
+            status: 'Paid',
+            paymentId: reference,
+            shippingAddress: orderBody.shippingAddress,
+            paymentType: 'Card',
+          });
+          const updatedOrder = await Order.findByIdAndUpdate(
+            order.id,
+            { transactionId: transaction.id },
+            {
+              useFindAndModify: false,
+              new: true,
+            }
+          );
+          const user = await User.findById(order.user);
+          const body = {
+            title: 'Order Completed!',
+            content: `Hey ${user.firstName}, thanks for using Servit.`,
+          };
+          notificationService.sendNotificationToUser(body, order.user);
+          return { updatedOrder, transaction };
+        }
+        const order = await Order.create({
+          cartId: orderBody.cartId,
+          user: userId,
+          vendorId: orderBody.vendorId,
+          paymentId: reference,
+          shippingAddress: userDetails.homeAddress,
+          shippingStatus: 'Pending',
+          totalAmount,
+          items: orderBody.items,
+        });
+        const transaction = await Transaction.create({
+          orderId: order.id,
+          status: 'Paid',
+          paymentId: reference,
+          shippingAddress: userDetails.homeAddress,
+          paymentType: 'Card',
+        });
+        const updatedOrder = await Order.findByIdAndUpdate(
+          order.id,
+          { transactionId: transaction.id },
+          {
+            useFindAndModify: false,
+            new: true,
+          }
+        );
+        const user = await User.findById(order.user);
+        const body = {
+          title: 'Order Completed!',
+          content: `Hey ${user.firstName}, thanks for using Servit.`,
+        };
+        notificationService.sendNotificationToUser(body, order.user);
+        return { updatedOrder, transaction };
+      }
     }
   } catch (error) {
-    console.error(error);
+    console.error(error, 'Order error');
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Order not made!');
   }
 };

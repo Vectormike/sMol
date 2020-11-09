@@ -99,11 +99,11 @@ const saveCard = async (cardDetails) => {
         return card;
       }
     } else {
-      throw new Error('Card is already saved!');
+      throw new Error();
     }
   } catch (error) {
     console.error(error.message);
-    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Card is already saved on our system!');
   }
 };
 
