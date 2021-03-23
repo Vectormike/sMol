@@ -67,11 +67,6 @@ const vendorSchema = mongoose.Schema(
       enum: roles,
       default: 'vendor',
     },
-    // ratings: {
-    //   type: Number,
-    //   max: 5,
-    //   default: 0,
-    // },
   },
   {
     timestamps: true,
